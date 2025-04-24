@@ -1,0 +1,24 @@
+﻿@model RestaurantWebsite.Models.Employee
+@{
+    ViewData["Title"] = "Update Employee";
+}
+<h2>Update Employee</h2>
+<form asp-action="Update" method="post">
+    <input asp-for="EmployeeId" type="hidden" />
+    <div>
+        <label asp-for="FullName"></label>
+        <input asp-for="FullName" />
+        <span asp-validation-for="FullName"></span>
+    </div>
+    <div>
+        <label asp-for="BirthDate"></label>
+        <input asp-for="BirthDate" type="date" />
+        <span asp-validation-for="BirthDate"></span>
+    </div>
+    <div>
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" />
+        <span asp-validation-for="PhoneNumber"></span>
+    </div>
+    <button type="submit">Update</button>
+</form>

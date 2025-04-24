@@ -1,0 +1,15 @@
+﻿@model RestaurantWebsite.Models.Employee
+@{
+    ViewData["Title"] = "Delete Employee";
+}
+<h2>Are you sure you want to delete this employee?</h2>
+<div>
+    <strong>Name:</strong> @Model.FullName<br />
+    <strong>BirthDate:</strong> @Model.BirthDate.ToShortDateString()<br />
+    <strong>Phone:</strong> @Model.PhoneNumber
+</div>
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="EmployeeId" />
+    <button type="submit">Delete</button>
+    <a asp-action="Index">Cancel</a>
+</form>
