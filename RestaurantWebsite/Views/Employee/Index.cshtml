@@ -1,37 +1,15 @@
 ﻿@model IEnumerable<RestaurantWebsite.Models.Employee>
 
-@{
-    ViewData["Title"] = "Employee List";
-}
-
 <h2>Employee List</h2>
 
-<a asp-action="Add">Add New Employee</a>
+<p>Test View Loaded</p>
 
-<table border="1" cellpadding="5">
-    <thead>
+<table>
+    @foreach (var emp in Model)
+    {
         <tr>
-            <th>ID</th>
-            <th>Full Name</th>
-            <th>Birth Date</th>
-            <th>Phone</th>
-            <th>Actions</th>
+            <td>@emp.EmployeeId</td>
+            <td>@emp.FullName</td>
         </tr>
-    </thead>
-    <tbody>
-        @foreach (var emp in Model)
-        {
-            <tr>
-                <td>@emp.EmployeeId</td>
-                <td>@emp.FullName</td>
-                <td>@emp.BirthDate.ToShortDateString()</td>
-                <td>@emp.PhoneNumber</td>
-                <td>
-                    <a asp-action="Display" asp-route-id="@emp.EmployeeId">View</a> |
-                    <a asp-action="Update" asp-route-id="@emp.EmployeeId">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@emp.EmployeeId">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
+    }
 </table>
