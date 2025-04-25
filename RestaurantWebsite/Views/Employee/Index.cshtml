@@ -1,15 +1,54 @@
 ﻿@model IEnumerable<RestaurantWebsite.Models.Employee>
 
-<h2>Employee List</h2>
+@{
+    ViewData["Title"] = "Danh sách nhân viên";
+}
 
-<p>Test View Loaded</p>
+<div class="container mt-4">
+    <h2>Danh sách nhân viên</h2>
 
-<table>
-    @foreach (var emp in Model)
-    {
-        <tr>
-            <td>@emp.EmployeeId</td>
-            <td>@emp.FullName</td>
-        </tr>
-    }
-</table>
+    <p>
+        <a asp-action="Add" class="btn btn-primary">Thêm nhân viên mới</a>
+    </p>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.EmployeeId)</th>
+                <th>@Html.DisplayNameFor(model => model.FullName)</th>
+                <th>@Html.DisplayNameFor(model => model.BirthDate)</th>
+                <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
+                <th>Hình ảnh</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.EmployeeId)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FullName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BirthDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.Img))
+                        {
+                            <img src="~/images/@item.Img" alt="@item.FullName" style="width: 50px; height: 50px;" class="img-thumbnail" />
+                        }
+                        else
+                        {
+                            <span>Không có hình ảnh</span>
+                        }
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a asp-action="Display" asp-route-id="@item.EmployeeId" class="btn btn-info btn-sm">Chi tiết</a>
+                            <a asp-action="Update" asp-route-id="@item.EmployeeId" class="btn btn-warning btn-sm">Sửa</a>
+                            <a asp-action="Delete" asp-route-id="@item.EmployeeId" class="btn btn-danger btn-sm">Xóa</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
