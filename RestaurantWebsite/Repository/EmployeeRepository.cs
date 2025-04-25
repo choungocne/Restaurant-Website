@@ -30,7 +30,7 @@ namespace RestaurantWebsite.Repository
         }
         public void Add(Employee employee)
         {
-            employee.EmployeeId = _employees.Max(p => p.EmployeeId) + 1;
+            employee.EmployeeId = _employees.Count > 0 ? _employees.Max(p => p.EmployeeId) + 1 : 1;
             _employees.Add(employee);
         }
         public void Update(Employee employee)
@@ -48,21 +48,6 @@ namespace RestaurantWebsite.Repository
             {
                 _employees.Remove(employee);
             }
-        }
-
-        void IEmployeeRepository.Add(Employee employee)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IEmployeeRepository.Update(Employee employee)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IEmployeeRepository.Delete(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }
