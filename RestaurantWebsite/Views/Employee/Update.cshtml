@@ -1,24 +1,75 @@
 ﻿@model RestaurantWebsite.Models.Employee
+
 @{
-    ViewData["Title"] = "Update Employee";
+    Layout = null;
 }
-<h2>Update Employee</h2>
-<form asp-action="Update" method="post">
-    <input asp-for="EmployeeId" type="hidden" />
-    <div>
-        <label asp-for="FullName"></label>
-        <input asp-for="FullName" />
-        <span asp-validation-for="FullName"></span>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Cập nhật nhân viên</title>
+
+    <link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/css/main.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="container mt-4">
+        <h2>Update Employee</h2>
+
+        <form id="updateForm">
+            <input asp-for="EmployeeId" type="hidden" />
+
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="BirthDate" class="form-label"></label>
+                <input asp-for="BirthDate" type="date" class="form-control" />
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+        </form>
     </div>
-    <div>
-        <label asp-for="BirthDate"></label>
-        <input asp-for="BirthDate" type="date" />
-        <span asp-validation-for="BirthDate"></span>
-    </div>
-    <div>
-        <label asp-for="PhoneNumber"></label>
-        <input asp-for="PhoneNumber" />
-        <span asp-validation-for="PhoneNumber"></span>
-    </div>
-    <button type="submit">Update</button>
-</form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery -->
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/main.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#updateForm").submit(function (event) {
+                event.preventDefault(); // Ngăn form submit bình thường
+
+                var formData = $(this).serialize(); // Serialize form thành dạng chuỗi
+
+                $.ajax({
+                    url: '/Employee/Update', // Đường dẫn Controller/Action
+                    type: 'POST',
+                    data: formData,
+                    success: function (result) {
+                        // Nếu update thành công, tự động chuyển trang về Index
+                        window.location.href = '/Employee';
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Có lỗi xảy ra: " + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -20,9 +20,26 @@ namespace RestaurantWebsite.Controllers
 
         public IActionResult Index()
         {
-            var employees = _employeeRepository.GetAll();
-            return View(employees);
+            try
+            {
+                // Get all employees
+                var employees = _employeeRepository.GetAll();
+
+                // Add debug information
+                ViewBag.EmployeeCount = employees.Count();
+                ViewBag.HasData = employees.Any();
+
+                return View(employees);
+            }
+            catch (Exception ex)
+            {
+                // Handle and display any exceptions
+                ViewBag.ErrorMessage = $"Error retrieving employee data: {ex.Message}";
+                ViewBag.StackTrace = ex.StackTrace;
+                return View(new List<Employee>());
+            }
         }
+
         public IActionResult Display(int id)
         {
             var employee = _employeeRepository.GetById(id);
@@ -32,10 +49,9 @@ namespace RestaurantWebsite.Controllers
             }
             return View(employee);
         }
+
         public IActionResult Add()
         {
-            var employees = _employeeRepository.GetAll();
-            ViewBag.Employees = new SelectList(employees, "EmployeeId", "FullName");
             return View();
         }
 
@@ -44,34 +60,40 @@ namespace RestaurantWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Xử lý tệp tải lên
-                if (ImageFile != null && ImageFile.Length > 0)
+                try
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + ImageFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    // Đảm bảo thư mục tồn tại
-                    if (!Directory.Exists(uploadsFolder))
+                    // Handle image file upload
+                    if (ImageFile != null && ImageFile.Length > 0)
                     {
-                        Directory.CreateDirectory(uploadsFolder);
+                        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + ImageFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        // Ensure directory exists
+                        if (!Directory.Exists(uploadsFolder))
+                        {
+                            Directory.CreateDirectory(uploadsFolder);
+                        }
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            ImageFile.CopyTo(fileStream);
+                        }
+
+                        employee.Img = uniqueFileName;
                     }
 
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        ImageFile.CopyTo(fileStream);
-                    }
-
-                    employee.Img = uniqueFileName;
+                    _employeeRepository.Add(employee);
+                    TempData["SuccessMessage"] = "Employee added successfully!";
+                    return RedirectToAction("Index");
                 }
-
-                _employeeRepository.Add(employee);
-                return RedirectToAction("Index");
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Error adding employee: {ex.Message}");
+                }
             }
             return View(employee);
         }
-
-       
 
         public IActionResult Update(int id)
         {
@@ -88,40 +110,57 @@ namespace RestaurantWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Xử lý tệp tải lên
-                if (ImageFile != null && ImageFile.Length > 0)
+                try
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + ImageFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    // Đảm bảo thư mục tồn tại
-                    if (!Directory.Exists(uploadsFolder))
+                    // Handle image file upload
+                    if (ImageFile != null && ImageFile.Length > 0)
                     {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
+                        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + ImageFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        ImageFile.CopyTo(fileStream);
-                    }
-
-                    // Xóa tệp hình ảnh cũ (nếu có)
-                    var existingEmployee = _employeeRepository.GetById(employee.EmployeeId);
-                    if (existingEmployee != null && !string.IsNullOrEmpty(existingEmployee.Img))
-                    {
-                        string oldFilePath = Path.Combine(uploadsFolder, existingEmployee.Img);
-                        if (System.IO.File.Exists(oldFilePath))
+                        // Ensure directory exists
+                        if (!Directory.Exists(uploadsFolder))
                         {
-                            System.IO.File.Delete(oldFilePath);
+                            Directory.CreateDirectory(uploadsFolder);
+                        }
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            ImageFile.CopyTo(fileStream);
+                        }
+
+                        // Delete old image if exists
+                        var existingEmployee = _employeeRepository.GetById(employee.EmployeeId);
+                        if (existingEmployee != null && !string.IsNullOrEmpty(existingEmployee.Img))
+                        {
+                            string oldFilePath = Path.Combine(uploadsFolder, existingEmployee.Img);
+                            if (System.IO.File.Exists(oldFilePath))
+                            {
+                                System.IO.File.Delete(oldFilePath);
+                            }
+                        }
+
+                        employee.Img = uniqueFileName;
+                    }
+                    else
+                    {
+                        // Keep existing image if no new one was uploaded
+                        var existingEmployee = _employeeRepository.GetById(employee.EmployeeId);
+                        if (existingEmployee != null)
+                        {
+                            employee.Img = existingEmployee.Img;
                         }
                     }
 
-                    employee.Img = uniqueFileName;
+                    _employeeRepository.Update(employee);
+                    TempData["SuccessMessage"] = "Employee updated successfully!";
+                    return RedirectToAction("Index");
                 }
-
-                _employeeRepository.Update(employee);
-                return RedirectToAction("Index");
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Error updating employee: {ex.Message}");
+                }
             }
             return View(employee);
         }
@@ -140,19 +179,28 @@ namespace RestaurantWebsite.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var employee = _employeeRepository.GetById(id);
-            if (employee != null && !string.IsNullOrEmpty(employee.Img))
+            try
             {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                string filePath = Path.Combine(uploadsFolder, employee.Img);
-                if (System.IO.File.Exists(filePath))
+                var employee = _employeeRepository.GetById(id);
+                if (employee != null && !string.IsNullOrEmpty(employee.Img))
                 {
-                    System.IO.File.Delete(filePath);
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    string filePath = Path.Combine(uploadsFolder, employee.Img);
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
                 }
-            }
 
-            _employeeRepository.Delete(id);
-            return RedirectToAction("Index");
+                _employeeRepository.Delete(id);
+                TempData["SuccessMessage"] = "Employee deleted successfully!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting employee: {ex.Message}";
+                return RedirectToAction("Index");
+            }
         }
     }
 }
