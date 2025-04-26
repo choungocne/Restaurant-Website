@@ -10,6 +10,7 @@ public partial class Dish
     public string DishName { get; set; } = null!;
 
     public decimal UnitPrice { get; set; }
+    public string? Img { get; set; }
 
     public int CategoryId { get; set; }
 
