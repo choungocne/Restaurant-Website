@@ -5,9 +5,9 @@ namespace RestaurantWebsite.Repository
 {
     public class CustomerRepository : ICustomerRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly RestaurantContext _context;
 
-        public CustomerRepository(ApplicationDbContext context)
+        public CustomerRepository(RestaurantContext context)
         {
             _context = context;
         }

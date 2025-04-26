@@ -5,9 +5,9 @@ namespace RestaurantWebsite.Repository
 {
     public class DishRepository : IDishRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly RestaurantContext _context;
 
-        public DishRepository(ApplicationDbContext context)
+        public DishRepository(RestaurantContext context)
         {
             _context = context;
         }

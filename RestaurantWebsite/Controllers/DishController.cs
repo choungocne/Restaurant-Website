@@ -8,9 +8,9 @@ namespace RestaurantWebsite.Controllers
     public class DishController : Controller
     {
         private readonly IDishRepository _repo;
-        private readonly ApplicationDbContext _context;
+        private readonly RestaurantContext _context;
 
-        public DishController(IDishRepository repo, ApplicationDbContext context)
+        public DishController(IDishRepository repo, RestaurantContext context)
         {
             _repo = repo;
             _context = context;
