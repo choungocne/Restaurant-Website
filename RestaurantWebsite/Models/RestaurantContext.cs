@@ -14,7 +14,8 @@ public partial class RestaurantContext : DbContext
         : base(options)
     {
     }
-
+    public List<Dish> NewDishes { get; set; }
+    public List<Dish> OtherDishes { get; set; }
     public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<DiningTable> DiningTables { get; set; }

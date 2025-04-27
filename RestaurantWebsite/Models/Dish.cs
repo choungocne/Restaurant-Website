@@ -11,6 +11,7 @@ public partial class Dish
 
     public decimal UnitPrice { get; set; }
     public string? Img { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public int CategoryId { get; set; }
 
