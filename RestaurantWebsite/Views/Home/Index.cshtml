@@ -1,7 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-@model IEnumerable<RestaurantWebsite.Models.Employee>
+@model X.PagedList.IPagedList<Employee>
+@using X.PagedList.Mvc.Core;
+
 <!-- Hero Section -->
 <section id="hero" class="hero section light-background">
 
@@ -804,7 +806,8 @@
         </div>
 
     </div>
-
+@*     @Html.PagedListPager(Model, page=>Url.Action("Index",new{page=page}))
+ *@
 </section><!-- /Chefs Section -->
 <!-- Book A Table Section -->
 <section id="book-a-table" class="book-a-table section">
