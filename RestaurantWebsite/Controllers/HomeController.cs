@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantWebsite.Models;
+using RestaurantWebsite.Repositories;
 using RestaurantWebsite.Repository;
 using X.PagedList;
 
@@ -11,6 +12,7 @@ namespace RestaurantWebsite.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IDishRepository _dishRepository;
         RestaurantContext db = new RestaurantContext();
         public HomeController(ILogger<HomeController> logger)
         {
@@ -22,7 +24,9 @@ namespace RestaurantWebsite.Controllers
             int pageSize = 3;
             int pageNumber = page == null || page < 0 ? 1 : page.Value;
             var lstnhanvien = db.Employees.AsNoTracking().OrderBy(p => p.FullName);
+            var lstsanpham = db.Dishes.AsNoTracking().OrderBy(p => p.DishName);
             PagedList<Employee> lst = new PagedList<Employee>(lstnhanvien, pageNumber, pageSize);
+            PagedList<Dish> l = new PagedList<Dish>(lstsanpham, pageNumber, pageSize);
             return View(lst);
         }
 
