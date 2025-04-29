@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
+      @using System.Security.Claims
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -66,11 +66,54 @@
                             <li><a href="#">Dropdown 3</a></li>
                             <li><a href="#">Dropdown 4</a></li>
                         </ul>
+                      
+
                     </li>
                     <li><a href="#contact">Contact</a></li>
+
+
                 </ul>
+
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+
             </nav>
+            <ul class="navbar-nav">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Xin chào @User.Identity.Name!
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Dashboard">Quản trị viên</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            }
+                            @if (User.IsInRole("Employee"))
+                            {
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="Dashboard">Nhân viên</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            }
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Profile">Hồ sơ của tôi</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Orders">Đơn hàng của tôi</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form class="form-inline" asp-area="" asp-controller="Auth" asp-action="Logout" method="post">
+                                    <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                else
+                {
+
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">Đăng nhập</a>
+                    </li>
+                }
+            </ul>
 
             <a class="btn-getstarted" href="index.html#book-a-table">Book a Table</a>
 

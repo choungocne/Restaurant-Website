@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantWebsite.Models;
@@ -19,15 +19,18 @@ namespace RestaurantWebsite.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index(int ? page)
+        public IActionResult Index()
         {
-            int pageSize = 3;
-            int pageNumber = page == null || page < 0 ? 1 : page.Value;
-            var lstnhanvien = db.Employees.AsNoTracking().OrderBy(p => p.FullName);
-            var lstsanpham = db.Dishes.AsNoTracking().OrderBy(p => p.DishName);
-            PagedList<Employee> lst = new PagedList<Employee>(lstnhanvien, pageNumber, pageSize);
-            PagedList<Dish> l = new PagedList<Dish>(lstsanpham, pageNumber, pageSize);
-            return View(lst);
+            var employees = db.Employees.AsNoTracking().OrderBy(p => p.FullName).ToList();
+            var dishes = db.Dishes.AsNoTracking().OrderBy(p => p.DishName).ToList();
+
+            var viewModel = new EmployeeDishViewModel
+            {
+                Employees = employees,
+                Dishes = dishes
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Privacy()

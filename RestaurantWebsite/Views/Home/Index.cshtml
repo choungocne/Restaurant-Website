@@ -1,8 +1,10 @@
-﻿@{
+﻿@model RestaurantWebsite.Models.EmployeeDishViewModel
+@using X.PagedList
+
+@{
     ViewData["Title"] = "Home Page";
 }
-@model X.PagedList.IPagedList<Employee>
-@using X.PagedList.Mvc.Core;
+
 
 <!-- Hero Section -->
 <section id="hero" class="hero section light-background">
@@ -10,7 +12,7 @@
     <div class="container">
         <div class="row gy-4 justify-content-center justify-content-lg-between">
             <div class="col-lg-5 order-2 order-lg-1 d-flex flex-column justify-content-center">
-                <h1 data-aos="fade-up">Enjoy Your Healthy<br>Delicious Food</h1>
+                <h1 data-aos="fade-up">Nhà hàng<br>Ái Huê</h1>
                 <p data-aos="fade-up" data-aos-delay="100">We are team of talented designers making websites with Bootstrap</p>
                 <div class="d-flex" data-aos="fade-up" data-aos-delay="200">
                     <a href="#book-a-table" class="btn-get-started">Booka a Table</a>
@@ -39,15 +41,16 @@
             <div class="col-lg-7" data-aos="fade-up" data-aos-delay="100">
                 <img src="./img/about.jpg" class="img-fluid mb-4" alt="">
                 <div class="book-a-table">
-                    <h3>Book a Table</h3>
+                    <h3>Đặt lịch</h3>
                     <p>+1 5589 55488 55</p>
                 </div>
             </div>
             <div class="col-lg-5" data-aos="fade-up" data-aos-delay="250">
                 <div class="content ps-0 ps-lg-5">
                     <p class="fst-italic">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua.
+                        Nhà hàng Yummy trực thuộc Công ty Cổ phần Dịch vụ Du lịch . Với thương hiệu trên 70 năm, tọa lạc ngay trung tâm Quận 5, Yummy đã trở thành cái tên quen thuộc đối với khách hàng khu vực Chợ Lớn nói riêng, địa bàn TP. Hồ Chí Minh nói chung và khách du lịch Trung Quốc, Đài Loan và Đông Nam Á.
+
+                        Nhằm gửi đến khách hàng chất lượng phục vụ tốt nhất, nhà hàng Ái Huê đã không ngừng thay đổi và phát triển từ nâng cấp sửa chữa cơ sở vật chất hạ tầng đến nâng cao trình độ chuyên môn nghiệp vụ trong công tác tổ chức.
                     </p>
                     <ul>
                         <li><i class="bi bi-check-circle-fill"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></li>
@@ -55,8 +58,11 @@
                         <li><i class="bi bi-check-circle-fill"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</span></li>
                     </ul>
                     <p>
-                        Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident
+                        Nhà hàng nhận tổ chức và phục vụ nhiều loại hình tiệc:
+                        Tiệc cưới theo yêu cầu của khách hàng: phong cách truyền thống Phương Đông hay phong cách hiện đại Phương Tây
+                        Tiệc liên hoan, mừng thọ, họp mặt thân mật, v.v…
+                        Tổ chức các sự kiện quan trọng như hội nghị khách hàng, đại hội, các buổi lễ ra mắt, v.v…
+                        Nhận đặt ăn cho các đoàn khách du lịch.
                     </p>
 
                     <div class="position-relative mt-4">
@@ -168,364 +174,52 @@
 
 </section><!-- /Stats Section -->
 <!-- Menu Section -->
+<!-- Menu Section -->
 <section id="menu" class="menu section">
-
-    <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
         <h2>Our Menu</h2>
         <p><span>Check Our</span> <span class="description-title">Yummy Menu</span></p>
-    </div><!-- End Section Title -->
-
-    <div class="container">
-
-        <ul class="nav nav-tabs d-flex justify-content-center" data-aos="fade-up" data-aos-delay="100">
-
-            <li class="nav-item">
-                <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#menu-starters">
-                    <h4>Starters</h4>
-                </a>
-            </li><!-- End tab nav item -->
-
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#menu-breakfast">
-                    <h4>Breakfast</h4>
-                </a><!-- End tab nav item -->
-
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#menu-lunch">
-                    <h4>Lunch</h4>
-                </a>
-            </li><!-- End tab nav item -->
-
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#menu-dinner">
-                    <h4>Dinner</h4>
-                </a>
-            </li><!-- End tab nav item -->
-
-        </ul>
-
-        <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
-
-            <div class="tab-pane fade active show" id="menu-starters">
-
-                <div class="tab-header text-center">
-                    <p>Menu</p>
-                    <h3>Starters</h3>
-                </div>
-
-                <div class="row gy-5">
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-1.png" class="glightbox"><img src="./img/menu/menu-item-1.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Magnam Tiste</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $5.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-2.png" class="glightbox"><img src="./img/menu/menu-item-2.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Aut Luia</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $14.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-3.png" class="glightbox"><img src="./img/menu/menu-item-3.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Est Eligendi</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $8.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-4.png" class="glightbox"><img src="./img/menu/menu-item-4.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Eos Luibusdam</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $12.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-5.png" class="glightbox"><img src="./img/menu/menu-item-5.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Eos Luibusdam</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $12.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-6.png" class="glightbox"><img src="./img/menu/menu-item-6.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Laboriosam Direva</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $9.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                </div>
-            </div><!-- End Starter Menu Content -->
-
-            <div class="tab-pane fade" id="menu-breakfast">
-
-                <div class="tab-header text-center">
-                    <p>Menu</p>
-                    <h3>Breakfast</h3>
-                </div>
-
-                <div class="row gy-5">
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-1.png" class="glightbox"><img src="./img/menu/menu-item-1.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Magnam Tiste</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $5.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-2.png" class="glightbox"><img src="./img/menu/menu-item-2.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Aut Luia</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $14.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-3.png" class="glightbox"><img src="./img/menu/menu-item-3.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Est Eligendi</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $8.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-4.png" class="glightbox"><img src="./img/menu/menu-item-4.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Eos Luibusdam</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $12.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-5.png" class="glightbox"><img src="./img/menu/menu-item-5.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Eos Luibusdam</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $12.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-6.png" class="glightbox"><img src="./img/menu/menu-item-6.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Laboriosam Direva</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $9.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                </div>
-            </div><!-- End Breakfast Menu Content -->
-
-            <div class="tab-pane fade" id="menu-lunch">
-
-                <div class="tab-header text-center">
-                    <p>Menu</p>
-                    <h3>Lunch</h3>
-                </div>
-
-                <div class="row gy-5">
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-1.png" class="glightbox"><img src="./img/menu/menu-item-1.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Magnam Tiste</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $5.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-2.png" class="glightbox"><img src="./img/menu/menu-item-2.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Aut Luia</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $14.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-3.png" class="glightbox"><img src="./img/menu/menu-item-3.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Est Eligendi</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $8.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-4.png" class="glightbox"><img src="./img/menu/menu-item-4.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Eos Luibusdam</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $12.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-5.png" class="glightbox"><img src="./img/menu/menu-item-5.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Eos Luibusdam</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $12.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-6.png" class="glightbox"><img src="./img/menu/menu-item-6.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Laboriosam Direva</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $9.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                </div>
-            </div><!-- End Lunch Menu Content -->
-
-            <div class="tab-pane fade" id="menu-dinner">
-
-                <div class="tab-header text-center">
-                    <p>Menu</p>
-                    <h3>Dinner</h3>
-                </div>
-
-                <div class="row gy-5">
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-1.png" class="glightbox"><img src="./img/menu/menu-item-1.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Magnam Tiste</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $5.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-2.png" class="glightbox"><img src="./img/menu/menu-item-2.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Aut Luia</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $14.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-3.png" class="glightbox"><img src="./img/menu/menu-item-3.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Est Eligendi</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $8.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-4.png" class="glightbox"><img src="./img/menu/menu-item-4.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Eos Luibusdam</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $12.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-5.png" class="glightbox"><img src="./img/menu/menu-item-5.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Eos Luibusdam</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $12.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                    <div class="col-lg-4 menu-item">
-                        <a href="./img/menu/menu-item-6.png" class="glightbox"><img src="./img/menu/menu-item-6.png" class="menu-img img-fluid" alt=""></a>
-                        <h4>Laboriosam Direva</h4>
-                        <p class="ingredients">
-                            Lorem, deren, trataro, filede, nerada
-                        </p>
-                        <p class="price">
-                            $9.95
-                        </p>
-                    </div><!-- Menu Item -->
-
-                </div>
-            </div><!-- End Dinner Menu Content -->
-
-        </div>
-
     </div>
 
-</section><!-- /Menu Section -->
-<!-- Testimonials Section -->
+    <div class="container">  
+
+
+        <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
+          
+            <div class="tab-pane fade active show" id="menu-starters">
+                <div class="tab-header text-center">
+                   
+                </div>
+                <div class="row gy-5">
+                    @if (Model.Dishes != null && Model.Dishes.Any())
+                    {
+                        @foreach (var dish in Model.Dishes)
+                        {
+                            <div class="col-lg-4 menu-item">
+                                @if (!string.IsNullOrEmpty(dish.Img))
+                                {
+                                    <a href="~/img/menu/@dish.Img" class="glightbox"><img src="~/img/menu/@dish.Img" class="menu-img img-fluid" alt="@dish.DishName"></a>
+                                }
+                                else
+                                {
+                                    <img src="/img/menu/default.jpg" class="menu-img img-fluid" alt="No Image">
+                                }
+                                <h4>@dish.DishName</h4>
+@*                                 <p class="ingredients">@dish.Category.CategoryName</p>
+ *@                                <p class="price">$@dish.UnitPrice.ToString("F2")</p>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12 text-center text-red-600">Không có món ăn nào trong danh mục Starters.</div>
+                    }
+                </div>
+            </div>
+         
+        </div>
+    </div>
+</section><!-- /Menu Section --><!-- Testimonials Section -->
 <section id="testimonials" class="testimonials section light-background">
 
     <!-- Section Title -->
@@ -729,87 +423,59 @@
     </div>
 
 </section><!-- /Events Section -->
+
 <!-- Chefs Section -->
 <section id="chefs" class="chefs section">
-
-    <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
-        <h2>chefs</h2>
-        <p><span>Our</span> <span class="description-title">Proffesional Chefs<br></span></p>
-    </div><!-- End Section Title -->
+        <h2>Chefs</h2>
+        <p><span>Our</span> <span class="description-title">Professional Chefs</span></p>
+    </div>
 
     <div class="container">
+       
 
         <div class="row gy-4">
-
-
-            @if (TempData["SuccessMessage"] is string success)
+            @if (Model.Employees != null && Model.Employees.Any())
             {
-                <div class="alert alert-success alert-dismissible fade show">
-                    @success
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            }
-            @if ((TempData["ErrorMessage"] as string) is string error)
-            {
-                <div class="alert alert-danger alert-dismissible fade show">
-                    @error
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            }
-
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-                @if (Model != null && Model.Any())
+                @foreach (var emp in Model.Employees)
                 {
-                    @foreach (var emp in Model)
-                    {
-                        <div class="col">
-                            <div class="card h-100 shadow-sm">
-                                @if (!string.IsNullOrEmpty(emp.Img))
-                                {
-                                    <img src="~/img/chefs/@emp.Img" class="card-img-top" alt="@emp.FullName" style="object-fit: cover; height: 200px;">
-                                }
-                                else
-                                {
-                                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height:200px;">
-                                        <i class="bi bi-person-circle fs-1"></i>
-                                    </div>
-                                }
-
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">@emp.FullName</h5>
-                                    <p class="card-text mb-1">
-                                        <i class="bi bi-calendar-event me-1"></i>
-                                        @emp.BirthDate.ToString("dd/MM/yyyy")
-                                    </p>
-                                    <p class="card-text mb-3">
-                                        <i class="bi bi-telephone me-1"></i>
-                                        @(string.IsNullOrEmpty(emp.PhoneNumber) ? "N/A" : emp.PhoneNumber)
-                                    </p>
-                                   
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="member">
+                            @if (!string.IsNullOrEmpty(emp.Img))
+                            {
+                                <img src="~/img/chefs/@emp.Img" class="card-img-top" alt="@emp.FullName" style="object-fit: cover; height: 300px;" />
+                            }
+                            else
+                            {
+                                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 300px;">
+                                    <i class="bi bi-person-circle fs-1"></i>
+                                </div>
+                            }
+                            <div class="member-info">
+                                <h4>@emp.FullName</h4>
+                                <p>@emp.Detail</p>
+                                <div class="social">
+                                    <a href=""><i class="bi bi-twitter-x"></i></a>
+                                    <a href=""><i class="bi bi-facebook"></i></a>
+                                    <a href=""><i class="bi bi-instagram"></i></a>
+                                    <a href=""><i class="bi bi-linkedin"></i></a>
                                 </div>
                             </div>
                         </div>
-                    }
-                }
-                else
-                {
-                    <div class="col-12">
-                        <div class="alert alert-info text-center mb-0">
-                            Không có dữ liệu nhân viên
-                        </div>
                     </div>
                 }
-            </div>
-         
-
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-info text-center mb-0">
+                        Không có dữ liệu nhân viên
+                    </div>
+                </div>
+            }
         </div>
-
     </div>
-@*     @Html.PagedListPager(Model, page=>Url.Action("Index",new{page=page}))
- *@
 </section><!-- /Chefs Section -->
-<!-- Book A Table Section -->
 <section id="book-a-table" class="book-a-table section">
 
     <!-- Section Title -->
