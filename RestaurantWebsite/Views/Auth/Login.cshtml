@@ -1,0 +1,68 @@
+﻿@model RestaurantWebsite.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+    Layout = null;
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>
+        Login Page
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+</head>
+<body class="bg-white min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-6xl w-full flex flex-col md:flex-row items-center md:items-start gap-12">
+        <div class="flex-shrink-0 w-full md:w-1/2 flex justify-center md:justify-start">
+            <img alt="Illustration of a girl standing next to a large smartphone with a keyhole and a key in her hand, surrounded by minimal plants and abstract shapes" class="max-w-full h-auto" height="400" src="https://storage.googleapis.com/a1aa/image/742827d7-58c2-4ff2-42a3-64fc2ad0fcee.jpg" width="400" />
+        </div>
+        <form action="#" class="w-full md:w-1/2 max-w-md space-y-4" method="POST">
+            <input class="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Email address" required="" type="email" />
+            <input class="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Password" required="" type="password" />
+            <div class="flex items-center justify-between text-gray-700 text-sm">
+                <label class="flex items-center gap-2 select-none">
+                    <input checked="" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" type="checkbox" />
+                    Remember me
+                </label>
+                <a class="text-blue-600 hover:underline" href="#">
+                    Forgot password?
+                </a>
+            </div>
+            <button class="w-full bg-blue-600 text-white font-semibold py-3 rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1" type="submit">
+                SIGN IN
+            </button>
+            <div class="flex items-center justify-center gap-3 text-gray-400 text-sm font-semibold">
+                <hr class="flex-grow border-t border-gray-300" />
+                <span>
+                    OR
+                </span>
+                <hr class="flex-grow border-t border-gray-300" />
+            </div>
+            <button  class="w-full bg-blue-800 hover:bg-blue-900 text-white font-semibold py-3 rounded-md shadow-md flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-1" type="button">
+              <a asp-action="Register">
+              Register
+              </a>
+            </button>
+            <button class="w-full bg-blue-800 hover:bg-blue-900 text-white font-semibold py-3 rounded-md shadow-md flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-1" type="button">
+                <i class="fab fa-facebook-f">
+                </i>
+                CONTINUE WITH FACEBOOK
+            </button>
+            <button class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-3 rounded-md shadow-md flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1" type="button">
+                <i class="fab fa-twitter">
+                </i>
+                CONTINUE WITH TWITTER
+            </button>
+        </form>
+    </div>
+</body>
+</html>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
