@@ -10,6 +10,8 @@ public partial class DiningTable
     public string? TableName { get; set; }
 
     public string? Location { get; set; }
+    public string? Img {  get; set; }
+    public int Quantity {  get; set; }
 
     public virtual ICollection<OrderService> OrderServices { get; set; } = new List<OrderService>();
 }
