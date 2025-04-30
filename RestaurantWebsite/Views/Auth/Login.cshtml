@@ -20,11 +20,11 @@
             <img alt="Illustration of a girl standing next to a large smartphone with a keyhole and a key in her hand, surrounded by minimal plants and abstract shapes" class="max-w-full h-auto" height="400" src="https://storage.googleapis.com/a1aa/image/742827d7-58c2-4ff2-42a3-64fc2ad0fcee.jpg" width="400" />
         </div>
         <form action="#" class="w-full md:w-1/2 max-w-md space-y-4" method="POST">
-            <input class="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Email address" required="" type="email" />
-            <input class="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Password" required="" type="password" />
+            <input asp-for="Username" class="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Email address" required="" type="email" />
+            <input asp-for="Password" class="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Password" required="" type="password" />
             <div class="flex items-center justify-between text-gray-700 text-sm">
-                <label class="flex items-center gap-2 select-none">
-                    <input checked="" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" type="checkbox" />
+                <label asp-for="RememberMe" class="flex items-center gap-2 select-none">
+                    <input asp-for="RememberMe" checked="" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" type="checkbox" />
                     Remember me
                 </label>
                 <a class="text-blue-600 hover:underline" href="#">
@@ -42,8 +42,8 @@
                 <hr class="flex-grow border-t border-gray-300" />
             </div>
             <button  class="w-full bg-blue-800 hover:bg-blue-900 text-white font-semibold py-3 rounded-md shadow-md flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-1" type="button">
-              <a asp-action="Register">
-              Register
+              <a href="/Auth/Register">
+              REGISTER
               </a>
             </button>
             <button class="w-full bg-blue-800 hover:bg-blue-900 text-white font-semibold py-3 rounded-md shadow-md flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-1" type="button">

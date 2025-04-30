@@ -6,53 +6,23 @@
 
 <h1>Dishes</h1>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        @TempData["SuccessMessage"]
-        @if (TempData["OriginalDish"] != null)
-        {
-            
-                var originalDish = System.Text.Json.JsonSerializer.Deserialize<RestaurantWebsite.Models.Dish>(TempData["OriginalDish"].ToString());
-            
-            <br />
-            <strong>Original Data:</strong>
-            <ul>
-                <li>Name: @originalDish.DishName</li>
-                <li>Price: @originalDish.UnitPrice</li>
-                <li>Image: @originalDish.Img</li>
-                <li>Created At: @originalDish.CreatedAt</li>
-            </ul>
-        }
-    </div>
-}
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
 
 <div class="container">
     <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
         <div class="tab-pane fade active show" id="menu-starters">
-            <div class="tab-header text-center">
-                <p>Menu</p>
-                <h3>Starters</h3>
-            </div>
+            
             <div class="row gy-5">
                 @foreach (var item in Model)
                 {
                     <div class="col-lg-4 menu-item">
-                        <img src="@item.Img" class="card-img-top" alt="@item.DishName" style="object-fit: cover;" />
+                        <img src="/img/menu/@item.Img" class="card-img-top" alt="@item.DishName" style="object-fit: cover;" />
                         <h4>@Html.DisplayFor(modelItem => item.DishName)</h4>
                         <p class="ingredients">
-                            <!-- Có thể thêm mô tả nếu model Dish có trường Ingredients -->
                         </p>
                         <p class="price">
                             $@Html.DisplayFor(modelItem => item.UnitPrice)
                         </p>
-                        <a asp-action="Edit" asp-route-id="@item.DishId" class="btn btn-sm btn-warning">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.DishId" class="btn btn-sm btn-info">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.DishId" class="btn btn-sm btn-danger">Delete</a>
+                       
                     </div>
                 }
             </div>

@@ -1,5 +1,6 @@
-﻿@model RestaurantWebsite.Models.EmployeeDishViewModel
+﻿@model RestaurantWebsite.ViewModels.EmployeeDishViewModel
 @using X.PagedList
+@using X.PagedList.Mvc.Core
 
 @{
     ViewData["Title"] = "Home Page";
@@ -12,8 +13,8 @@
     <div class="container">
         <div class="row gy-4 justify-content-center justify-content-lg-between">
             <div class="col-lg-5 order-2 order-lg-1 d-flex flex-column justify-content-center">
-                <h1 data-aos="fade-up">Nhà hàng<br>Ái Huê</h1>
-                <p data-aos="fade-up" data-aos-delay="100">We are team of talented designers making websites with Bootstrap</p>
+                <h1 data-aos="fade-up">Yummy<br>Restaurant</h1>
+                <p data-aos="fade-up" data-aos-delay="100">Nhà hàng Yummy là địa điểm lý tưởng cho các buổi tiệc, họp mặt, hay các sự kiện đặc biệt khác. Chúng tôi tự tin rằng sự chuyên nghiệp và tận tâm của đội ngũ nhân viên cùng không gian sang trọng sẽ làm hài lòng mọi khách hàng.</p>
                 <div class="d-flex" data-aos="fade-up" data-aos-delay="200">
                     <a href="#book-a-table" class="btn-get-started">Booka a Table</a>
                     <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
@@ -31,8 +32,8 @@
 
     <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
-        <h2>About Us<br></h2>
-        <p><span>Learn More</span> <span class="description-title">About Us</span></p>
+        <h2>Về chúng tôi<br></h2>
+        <p><span>Phương châm “Ngon miệng – Ấm lòng – Trọn vẹn trải nghiệm”</span></p>
     </div><!-- End Section Title -->
 
     <div class="container">
@@ -42,20 +43,17 @@
                 <img src="./img/about.jpg" class="img-fluid mb-4" alt="">
                 <div class="book-a-table">
                     <h3>Đặt lịch</h3>
-                    <p>+1 5589 55488 55</p>
+                    <p>+84 361 136 1547</p>
                 </div>
             </div>
             <div class="col-lg-5" data-aos="fade-up" data-aos-delay="250">
                 <div class="content ps-0 ps-lg-5">
                     <p class="fst-italic">
-                        Nhà hàng Yummy trực thuộc Công ty Cổ phần Dịch vụ Du lịch . Với thương hiệu trên 70 năm, tọa lạc ngay trung tâm Quận 5, Yummy đã trở thành cái tên quen thuộc đối với khách hàng khu vực Chợ Lớn nói riêng, địa bàn TP. Hồ Chí Minh nói chung và khách du lịch Trung Quốc, Đài Loan và Đông Nam Á.
-
-                        Nhằm gửi đến khách hàng chất lượng phục vụ tốt nhất, nhà hàng Ái Huê đã không ngừng thay đổi và phát triển từ nâng cấp sửa chữa cơ sở vật chất hạ tầng đến nâng cao trình độ chuyên môn nghiệp vụ trong công tác tổ chức.
+                        Nhà hàng Yummy là một điểm đến lý tưởng dành cho những ai yêu thích ẩm thực chất lượng trong một không gian hiện đại, ấm cúng. Tọa lạc tại vị trí thuận tiện trong thành phố, Yummy mang đến cho thực khách sự đa dạng trong lựa chọn với thực đơn phong phú, kết hợp hài hòa giữa món ăn truyền thống Việt Nam và ẩm thực quốc tế.
                     </p>
                     <ul>
-                        <li><i class="bi bi-check-circle-fill"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat.</span></li>
-                        <li><i class="bi bi-check-circle-fill"></i> <span>Duis aute irure dolor in reprehenderit in voluptate velit.</span></li>
-                        <li><i class="bi bi-check-circle-fill"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i> <span>Tổ Chức Tiệc Cưới.</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i> <span>Điểm tâm.</span></li>
                     </ul>
                     <p>
                         Nhà hàng nhận tổ chức và phục vụ nhiều loại hình tiệc:
@@ -85,10 +83,9 @@
 
             <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
                 <div class="why-box">
-                    <h3>Why Choose Yummy</h3>
+                    <h3>Tại sao chọn Yummy</h3>
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit
-                        Asperiores dolores sed et. Tenetur quia eos. Autem tempore quibusdam vel necessitatibus optio ad corporis.
+                        Chúng tôi không chỉ phục vụ món ăn, mà còn mang đến trải nghiệm ẩm thực trọn vẹn – nơi mà khách hàng cảm thấy như đang thưởng thức bữa cơm nhà trong một không gian hiện đại, ấm cúng.
                     </p>
                     <div class="text-center">
                         <a href="#" class="more-btn"><span>Learn More</span> <i class="bi bi-chevron-right"></i></a>
@@ -102,27 +99,34 @@
                     <div class="col-xl-4">
                         <div class="icon-box d-flex flex-column justify-content-center align-items-center">
                             <i class="bi bi-clipboard-data"></i>
-                            <h4>Corporis voluptates officia eiusmod</h4>
-                            <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
+                            <h4>Chất lượng món ăn</h4>
+                            <p>Các món ăn tại Yummy luôn được đánh giá cao nhờ hương vị đậm đà, trình bày đẹp mắt và được chế biến bởi đội ngũ đầu bếp giàu kinh nghiệm.</p>
                         </div>
                     </div><!-- End Icon Box -->
 
                     <div class="col-xl-4" data-aos="fade-up" data-aos-delay="300">
                         <div class="icon-box d-flex flex-column justify-content-center align-items-center">
                             <i class="bi bi-gem"></i>
-                            <h4>Ullamco laboris ladore lore pan</h4>
-                            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt</p>
-                        </div>
+                            <h4>Không gian và dịch vụ</h4>
+<p>
+                                Nhà hàng có thiết kế hiện đại, sạch sẽ, tạo cảm giác thoải mái và thư giãn cho khách hàng. Đội ngũ nhân viên thân thiện, phục vụ nhanh chóng và tận tình.
+</p>                        </div>
                     </div><!-- End Icon Box -->
 
                     <div class="col-xl-4" data-aos="fade-up" data-aos-delay="400">
                         <div class="icon-box d-flex flex-column justify-content-center align-items-center">
                             <i class="bi bi-inboxes"></i>
-                            <h4>Labore consequatur incidid dolore</h4>
-                            <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere</p>
+                            <h4>Giá cả hợp lý</h4>
+                            <p> So với chất lượng và dịch vụ, mức giá tại Yummy rất phù hợp với nhiều đối tượng khách hàng, từ học sinh – sinh viên đến gia đình hoặc khách hàng doanh nghiệp.</p>
                         </div>
                     </div><!-- End Icon Box -->
-
+                    <div class="col-xl-4" data-aos="fade-up" data-aos-delay="400">
+                        <div class="icon-box d-flex flex-column justify-content-center align-items-center">
+                            <i class="bi bi-inboxes"></i>
+                            <h4>Uy tín và thương hiệu</h4>
+                            <p> Yummy đã xây dựng được uy tín vững chắc trong lòng khách hàng nhờ sự ổn định về chất lượng và sự sáng tạo không ngừng trong ẩm thực.</p>
+                        </div>
+                    </div><!-- End Icon Box -->
                 </div>
             </div>
 
@@ -177,8 +181,8 @@
 <!-- Menu Section -->
 <section id="menu" class="menu section">
     <div class="container section-title" data-aos="fade-up">
-        <h2>Our Menu</h2>
-        <p><span>Check Our</span> <span class="description-title">Yummy Menu</span></p>
+        <h2>Danh sách món ăn</h2>
+        <p><span>Thực đơn</span> <span class="description-title">của Yummy</span></p>
     </div>
 
     <div class="container">  
@@ -193,7 +197,7 @@
                 <div class="row gy-5">
                     @if (Model.Dishes != null && Model.Dishes.Any())
                     {
-                        @foreach (var dish in Model.Dishes)
+                        @foreach (var dish in Model.Dishes.Take(3))
                         {
                             <div class="col-lg-4 menu-item">
                                 @if (!string.IsNullOrEmpty(dish.Img))
@@ -208,7 +212,9 @@
 @*                                 <p class="ingredients">@dish.Category.CategoryName</p>
  *@                                <p class="price">$@dish.UnitPrice.ToString("F2")</p>
                             </div>
+                           
                         }
+
                     }
                     else
                     {
@@ -224,8 +230,8 @@
 
     <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
-        <h2>TESTIMONIALS</h2>
-        <p>What Are They <span class="description-title">Saying About Us</span></p>
+        <h2>ĐÁNH GIÁ</h2>
+        <p>Khách hàng <span class="description-title">nói gì về chúng tôi</span></p>
     </div><!-- End Section Title -->
 
     <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -351,84 +357,42 @@
     </div>
 
 </section><!-- /Testimonials Section -->
-<!-- Events Section -->
-<section id="events" class="events section">
-
-    <div class="container-fluid" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="swiper init-swiper">
-            <script type="application/json" class="swiper-config">
-                {
-                  "loop": true,
-                  "speed": 600,
-                  "autoplay": {
-                    "delay": 5000
-                  },
-                  "slidesPerView": "auto",
-                  "pagination": {
-                    "el": ".swiper-pagination",
-                    "type": "bullets",
-                    "clickable": true
-                  },
-                  "breakpoints": {
-                    "320": {
-                      "slidesPerView": 1,
-                      "spaceBetween": 40
-                    },
-                    "1200": {
-                      "slidesPerView": 3,
-                      "spaceBetween": 1
-                    }
-                  }
-                }
-            </script>
-            <div class="swiper-wrapper">
-
-                <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(./img/events-1.jpg)">
-                    <h3>Custom Parties</h3>
-                    <div class="price align-self-start">$99</div>
-                    <p class="description">
-                        Quo corporis voluptas ea ad. Consectetur inventore sapiente ipsum voluptas eos omnis facere. Enim facilis veritatis id est rem repudiandae nulla expedita quas.
-                    </p>
-                </div><!-- End Event item -->
-
-                <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(./img/events-2.jpg)">
-                    <h3>Private Parties</h3>
-                    <div class="price align-self-start">$289</div>
-                    <p class="description">
-                        In delectus sint qui et enim. Et ab repudiandae inventore quaerat doloribus. Facere nemo vero est ut dolores ea assumenda et. Delectus saepe accusamus aspernatur.
-                    </p>
-                </div><!-- End Event item -->
-
-                <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(./img/events-3.jpg)">
-                    <h3>Birthday Parties</h3>
-                    <div class="price align-self-start">$499</div>
-                    <p class="description">
-                        Laborum aperiam atque omnis minus omnis est qui assumenda quos. Quis id sit quibusdam. Esse quisquam ducimus officia ipsum ut quibusdam maxime. Non enim perspiciatis.
-                    </p>
-                </div><!-- End Event item -->
-
-                <div class="swiper-slide event-item d-flex flex-column justify-content-end" style="background-image: url(./img/events-4.jpg)">
-                    <h3>Wedding Parties</h3>
-                    <div class="price align-self-start">$899</div>
-                    <p class="description">
-                        Laborum aperiam atque omnis minus omnis est qui assumenda quos. Quis id sit quibusdam. Esse quisquam ducimus officia ipsum ut quibusdam maxime. Non enim perspiciatis.
-                    </p>
-                </div><!-- End Event item -->
-
-            </div>
-            <div class="swiper-pagination"></div>
-        </div>
-
+<section id="tables" class="chefs section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Danh sách bàn</h2>
+        <p><span>Đặt bàn </span></p>
     </div>
 
-</section><!-- /Events Section -->
+    <div class="container">
 
+
+        <div class="row gy-4">
+             @foreach (var t in Model.DiningTables.Take(3))
+                {
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="member">
+                           
+                                <img src="~/img/table/@t.Img" class="card-img-top" alt="@t.TableName" style="object-fit: cover; height: 300px;" />
+                           
+                            <div class="member-info">
+                                <h4>@t.TableName</h4>
+                                <p>@t.Location</p>
+                               
+                            </div>
+                        </div>
+                    </div>
+                }
+          
+                </div>
+            }
+        </div>
+    </div>
+</section><!-- /Chefs Section -->
 <!-- Chefs Section -->
 <section id="chefs" class="chefs section">
     <div class="container section-title" data-aos="fade-up">
-        <h2>Chefs</h2>
-        <p><span>Our</span> <span class="description-title">Professional Chefs</span></p>
+        <h2>Nhân viên</h2>
+        <p><span>Nhân viên nhà hàng</span></p>
     </div>
 
     <div class="container">
@@ -437,7 +401,7 @@
         <div class="row gy-4">
             @if (Model.Employees != null && Model.Employees.Any())
             {
-                @foreach (var emp in Model.Employees)
+                @foreach (var emp in Model.Employees.Take(3))
                 {
                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                         <div class="member">
@@ -476,208 +440,3 @@
         </div>
     </div>
 </section><!-- /Chefs Section -->
-<section id="book-a-table" class="book-a-table section">
-
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-        <h2>Book A Table</h2>
-        <p><span>Book Your</span> <span class="description-title">Stay With Us<br></span></p>
-    </div><!-- End Section Title -->
-
-    <div class="container">
-
-        <div class="row g-0" data-aos="fade-up" data-aos-delay="100">
-
-            <div class="col-lg-4 reservation-img" style="background-image: url(./img/reservation.jpg);"></div>
-
-            <div class="col-lg-8 d-flex align-items-center reservation-form-bg" data-aos="fade-up" data-aos-delay="200">
-                <form action="forms/book-a-table.php" method="post" role="form" class="php-email-form">
-                    <div class="row gy-4">
-                        <div class="col-lg-4 col-md-6">
-                            <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required="">
-                        </div>
-                        <div class="col-lg-4 col-md-6">
-                            <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required="">
-                        </div>
-                        <div class="col-lg-4 col-md-6">
-                            <input type="text" class="form-control" name="phone" id="phone" placeholder="Your Phone" required="">
-                        </div>
-                        <div class="col-lg-4 col-md-6">
-                            <input type="date" name="date" class="form-control" id="date" placeholder="Date" required="">
-                        </div>
-                        <div class="col-lg-4 col-md-6">
-                            <input type="time" class="form-control" name="time" id="time" placeholder="Time" required="">
-                        </div>
-                        <div class="col-lg-4 col-md-6">
-                            <input type="number" class="form-control" name="people" id="people" placeholder="# of people" required="">
-                        </div>
-                    </div>
-
-                    <div class="form-group mt-3">
-                        <textarea class="form-control" name="message" rows="5" placeholder="Message"></textarea>
-                    </div>
-
-                    <div class="text-center mt-3">
-                        <div class="loading">Loading</div>
-                        <div class="error-message"></div>
-                        <div class="sent-message">Your booking request was sent. We will call back or send an Email to confirm your reservation. Thank you!</div>
-                        <button type="submit">Book a Table</button>
-                    </div>
-                </form>
-            </div><!-- End Reservation Form -->
-
-        </div>
-
-    </div>
-
-</section><!-- /Book A Table Section -->
-<!-- Gallery Section -->
-<section id="gallery" class="gallery section light-background">
-
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-        <h2>Gallery</h2>
-        <p><span>Check</span> <span class="description-title">Our Gallery</span></p>
-    </div><!-- End Section Title -->
-
-    <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="swiper init-swiper">
-            <script type="application/json" class="swiper-config">
-                {
-                  "loop": true,
-                  "speed": 600,
-                  "autoplay": {
-                    "delay": 5000
-                  },
-                  "slidesPerView": "auto",
-                  "centeredSlides": true,
-                  "pagination": {
-                    "el": ".swiper-pagination",
-                    "type": "bullets",
-                    "clickable": true
-                  },
-                  "breakpoints": {
-                    "320": {
-                      "slidesPerView": 1,
-                      "spaceBetween": 0
-                    },
-                    "768": {
-                      "slidesPerView": 3,
-                      "spaceBetween": 20
-                    },
-                    "1200": {
-                      "slidesPerView": 5,
-                      "spaceBetween": 20
-                    }
-                  }
-                }
-            </script>
-            <div class="swiper-wrapper align-items-center">
-                <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="./img/gallery/gallery-1.jpg"><img src="./img/gallery/gallery-1.jpg" class="img-fluid" alt=""></a></div>
-                <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="./img/gallery/gallery-2.jpg"><img src="./img/gallery/gallery-2.jpg" class="img-fluid" alt=""></a></div>
-                <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="./img/gallery/gallery-3.jpg"><img src="./img/gallery/gallery-3.jpg" class="img-fluid" alt=""></a></div>
-                <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="./img/gallery/gallery-4.jpg"><img src="./img/gallery/gallery-4.jpg" class="img-fluid" alt=""></a></div>
-                <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="./img/gallery/gallery-5.jpg"><img src="./img/gallery/gallery-5.jpg" class="img-fluid" alt=""></a></div>
-                <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="./img/gallery/gallery-6.jpg"><img src="./img/gallery/gallery-6.jpg" class="img-fluid" alt=""></a></div>
-                <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="./img/gallery/gallery-7.jpg"><img src="./img/gallery/gallery-7.jpg" class="img-fluid" alt=""></a></div>
-                <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery" href="./img/gallery/gallery-8.jpg"><img src="./img/gallery/gallery-8.jpg" class="img-fluid" alt=""></a></div>
-            </div>
-            <div class="swiper-pagination"></div>
-        </div>
-
-    </div>
-
-</section><!-- /Gallery Section -->
-<!-- Contact Section -->
-<section id="contact" class="contact section">
-
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-        <h2>Contact</h2>
-        <p><span>Need Help?</span> <span class="description-title">Contact Us</span></p>
-    </div><!-- End Section Title -->
-
-    <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="mb-5">
-            <iframe style="width: 100%; height: 400px;" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621" frameborder="0" allowfullscreen=""></iframe>
-        </div><!-- End Google Maps -->
-
-        <div class="row gy-4">
-
-            <div class="col-md-6">
-                <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="200">
-                    <i class="icon bi bi-geo-alt flex-shrink-0"></i>
-                    <div>
-                        <h3>Address</h3>
-                        <p>A108 Adam Street, New York, NY 535022</p>
-                    </div>
-                </div>
-            </div><!-- End Info Item -->
-
-            <div class="col-md-6">
-                <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="300">
-                    <i class="icon bi bi-telephone flex-shrink-0"></i>
-                    <div>
-                        <h3>Call Us</h3>
-                        <p>+1 5589 55488 55</p>
-                    </div>
-                </div>
-            </div><!-- End Info Item -->
-
-            <div class="col-md-6">
-                <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="400">
-                    <i class="icon bi bi-envelope flex-shrink-0"></i>
-                    <div>
-                        <h3>Email Us</h3>
-                        <p>info@example.com</p>
-                    </div>
-                </div>
-            </div><!-- End Info Item -->
-
-            <div class="col-md-6">
-                <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="500">
-                    <i class="icon bi bi-clock flex-shrink-0"></i>
-                    <div>
-                        <h3>Opening Hours<br></h3>
-                        <p><strong>Mon-Sat:</strong> 11AM - 23PM; <strong>Sunday:</strong> Closed</p>
-                    </div>
-                </div>
-            </div><!-- End Info Item -->
-
-        </div>
-
-        <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="600">
-            <div class="row gy-4">
-
-                <div class="col-md-6">
-                    <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
-                </div>
-
-                <div class="col-md-6 ">
-                    <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
-                </div>
-
-                <div class="col-md-12">
-                    <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
-                </div>
-
-                <div class="col-md-12">
-                    <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
-                </div>
-
-                <div class="col-md-12 text-center">
-                    <div class="loading">Loading</div>
-                    <div class="error-message"></div>
-                    <div class="sent-message">Your message has been sent. Thank you!</div>
-
-                    <button type="submit">Send Message</button>
-                </div>
-
-            </div>
-        </form><!-- End Contact Form -->
-
-    </div>
-
-</section><!-- /Contact Section -->

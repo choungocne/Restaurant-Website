@@ -5,27 +5,7 @@
 }
 
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Danh sách nhân viên</h2>
-        <a asp-action="Add" class="btn btn-primary">
-            <i class="bi bi-person-plus-fill"></i> Thêm nhân viên mới
-        </a>
-    </div>
-
-    @if (TempData["SuccessMessage"] is string success)
-    {
-        <div class="alert alert-success alert-dismissible fade show">
-            @success
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-    @if ((TempData["ErrorMessage"] as string) is string error)
-    {
-        <div class="alert alert-danger alert-dismissible fade show">
-            @error
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
+    
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
         @if (Model != null && Model.Any())
@@ -36,7 +16,7 @@
                     <div class="card h-100 shadow-sm">
                         @if (!string.IsNullOrEmpty(emp.Img))
                         {
-                            <img src="~/img/chefs/@emp.Img" class="card-img-top" alt="@emp.FullName" style="object-fit: cover; height: 200px;">
+                            <img src="~/img/chefs/@emp.Img" class="card-img-top" alt="@emp.FullName" style="object-fit: cover; height: 300px;" />
                         }
                         else
                         {
@@ -55,17 +35,7 @@
                                 <i class="bi bi-telephone me-1"></i>
                                 @(string.IsNullOrEmpty(emp.PhoneNumber) ? "N/A" : emp.PhoneNumber)
                             </p>
-                            <div class="mt-auto">
-                                <a asp-action="Display" asp-route-id="@emp.EmployeeId" class="btn btn-sm btn-info me-1">
-                                    <i class="bi bi-eye-fill"></i>
-                                </a>
-                                <a asp-action="Update" asp-route-id="@emp.EmployeeId" class="btn btn-sm btn-warning me-1">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@emp.EmployeeId" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash-fill"></i>
-                                </a>
-                            </div>
+                          
                         </div>
                     </div>
                 </div>
