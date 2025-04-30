@@ -1,68 +1,129 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RestaurantWebsite.Models;
-using RestaurantWebsite.Repository;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace RestaurantWebsite.Controllers
 {
+    [Authorize] // Yêu cầu đăng nhập
     public class CustomerController : Controller
     {
-        private readonly ICustomerRepository _repo;
+        private readonly RestaurantContext _context;
 
-        public CustomerController(ICustomerRepository repo)
+        public CustomerController(RestaurantContext context)
         {
-            _repo = repo;
+            _context = context;
         }
 
-        public IActionResult Index() => View(_repo.GetAll());
-
-        public IActionResult Add() => View();
-
-        [HttpPost]
-        public IActionResult Add(Customer customer)
+        // GET: Hiển thị hồ sơ khách hàng
+        public async Task<IActionResult> Index()
         {
-            if (ModelState.IsValid)
+            // Lấy UserId từ Claims
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var customer = await _context.Customers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.UserAccounts.UserId == userId);
+
+            if (customer == null)
             {
-                _repo.Add(customer);
-                return RedirectToAction("Index");
+                // Nếu chưa có hồ sơ, tạo mới
+                customer = new Customer { UserId = userId };
+                _context.Customers.Add(customer);
+                await _context.SaveChangesAsync();
             }
+
             return View(customer);
         }
 
-        public IActionResult Update(int id)
+        // GET: Form chỉnh sửa hồ sơ
+        public async Task<IActionResult> Edit()
         {
-            var customer = _repo.GetById(id);
-            if (customer == null) return NotFound();
-            return View(customer);
-        }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.UserId == userId);
 
-        [HttpPost]
-        public IActionResult Update(Customer customer)
-        {
-            if (ModelState.IsValid)
+            if (customer == null)
             {
-                _repo.Update(customer);
-                return RedirectToAction("Index");
+                return NotFound();
             }
+
             return View(customer);
         }
 
-        public IActionResult Delete(int id)
+        // POST: Cập nhật hồ sơ
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Customer customer)
         {
-            var customer = _repo.GetById(id);
-            return customer == null ? NotFound() : View(customer);
+            if (!ModelState.IsValid)
+            {
+                return View(customer);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var existingCustomer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (existingCustomer == null)
+            {
+                return NotFound();
+            }
+
+            // Cập nhật thông tin
+            existingCustomer.CustomerName = customer.CustomerName;
+            existingCustomer.PhoneNumber = customer.PhoneNumber;
+            existingCustomer.Address = customer.Address;
+
+            try
+            {
+                _context.Update(existingCustomer);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Hồ sơ đã được cập nhật thành công!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Không thể cập nhật hồ sơ. Vui lòng thử lại.");
+                return View(customer);
+            }
         }
 
+        // GET: Form xác nhận xóa tài khoản
+        public async Task<IActionResult> Delete()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return View(customer);
+        }
+
+        // POST: Xóa tài khoản
         [HttpPost, ActionName("Delete")]
-        public IActionResult DeleteConfirmed(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed()
         {
-            _repo.Delete(id);
-            return RedirectToAction("Index");
-        }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.UserId == userId);
 
-        public IActionResult Display(int id)
-        {
-            var customer = _repo.GetById(id);
-            return customer == null ? NotFound() : View(customer);
+            if (customer != null)
+            {
+                _context.Customers.Remove(customer);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Tài khoản đã được xóa thành công!";
+                // Đăng xuất sau khi xóa
+                return RedirectToAction("Logout", "Account");
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

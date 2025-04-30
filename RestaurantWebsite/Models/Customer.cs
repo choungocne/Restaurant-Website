@@ -18,6 +18,6 @@ public partial class Customer
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
     public virtual ICollection<OrderService> OrderServices { get; set; } = new List<OrderService>();
-
-    public virtual ICollection<UserAccount> UserAccounts { get; set; } = new List<UserAccount>();
+    public string UserId { get; set; } // Khóa ngoại liên kết với UserAccount.Id
+    public UserAccount UserAccount { get; set; }
 }

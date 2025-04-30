@@ -2,32 +2,31 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantWebsite.Models;
-using RestaurantWebsite.Repositories;
-using RestaurantWebsite.Repository;
-using X.PagedList;
+using RestaurantWebsite.ViewModels;
 
 namespace RestaurantWebsite.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IEmployeeRepository _employeeRepository;
-        private readonly IDishRepository _dishRepository;
-        RestaurantContext db = new RestaurantContext();
-        public HomeController(ILogger<HomeController> logger)
+        private readonly RestaurantContext _context;
+
+        public HomeController(ILogger<HomeController> logger, RestaurantContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int ? page)
         {
-            var employees = db.Employees.AsNoTracking().OrderBy(p => p.FullName).ToList();
-            var dishes = db.Dishes.AsNoTracking().OrderBy(p => p.DishName).ToList();
-
+            var employees = _context.Employees.AsNoTracking().OrderBy(p => p.FullName).ToList();
+            var dishes = _context.Dishes.AsNoTracking().OrderBy(p => p.DishName).ToList();
+            var tables = _context.DiningTables.AsNoTracking().OrderBy(p => p.TableName).ToList();
             var viewModel = new EmployeeDishViewModel
             {
                 Employees = employees,
-                Dishes = dishes
+                Dishes = dishes,
+                DiningTables = tables
             };
 
             return View(viewModel);
