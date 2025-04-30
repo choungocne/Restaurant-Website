@@ -245,5 +245,10 @@ public partial class RestaurantContext : DbContext
         OnModelCreatingPartial(modelBuilder);
     }
 
+    internal IEnumerable<DiningTable> ToList()
+    {
+        throw new NotImplementedException();
+    }
+
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
