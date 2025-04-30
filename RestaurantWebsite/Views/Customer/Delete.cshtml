@@ -1,0 +1,23 @@
+﻿@model RestaurantWebsite.Models.Customer
+@using RestaurantWebsite.Models
+
+@{
+    ViewData["Title"] = "Xóa tài khoản";
+}
+
+<h2>Xóa tài khoản</h2>
+
+<h3>Bạn có chắc muốn xóa tài khoản này?</h3>
+<div>
+    <h4>@Model.CustomerName</h4>
+    <dl class="row">
+        <dt class="col-sm-3">Số điện thoại</dt>
+        <dd class="col-sm-9">@Model.PhoneNumber</dd>
+
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="submit" value="Xóa" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
