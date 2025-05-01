@@ -1,11 +1,8 @@
-﻿@model X.PagedList.IPagedList<RestaurantWebsite.Models.DiningTable>
-@using RestaurantWebsite.Models
+﻿@using RestaurantWebsite.Models
 @using X.PagedList.Mvc.Core
 
 <h2>Danh sách bàn ăn</h2>
 
-@if (Model != null && Model.Any())
-{
     <div class="container">
         <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
             <div class="tab-pane fade active show" id="menu-starters">
@@ -14,8 +11,7 @@
                     @foreach (var item in Model)
                     {
                         <div class="col-lg-4 menu-item">
-                            <img src="/img/menu/@item.Img" class="card-img-top" alt="@item.TableName" style="object-fit: cover;" />
-                            <h4>@Html.DisplayFor(modelItem => item.TableName)</h4>
+                        <img src="/img/table/@item.Img" class="card-img-top" alt="@item.TableName" style="object-fit: cover;height: 200px;" />
                             <p class="ingredients">
                                 @item.Location  
                             </p>
@@ -30,9 +26,4 @@
         </div>
     </div>
 
-}
 
-else
-{
-    <p>Không có bàn nào được tìm thấy.</p>
-}

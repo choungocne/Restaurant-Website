@@ -12,6 +12,8 @@ public partial class DiningTable
     public string? Location { get; set; }
     public string? Img {  get; set; }
     public int Quantity {  get; set; }
+    public int NumberOfCustomer { get; set; }
+    public bool IsAvailable { get; set; } = true;
 
     public virtual ICollection<OrderService> OrderServices { get; set; } = new List<OrderService>();
 }
