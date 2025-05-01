@@ -17,7 +17,6 @@ builder.Services.AddDbContext<RestaurantContext>(options =>
 
 // Đăng ký các repository
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-
 builder.Services.AddScoped<IDishRepository, DishRepository>();
 builder.Services.AddScoped<IDishService, DishService>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

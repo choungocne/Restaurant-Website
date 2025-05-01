@@ -33,7 +33,7 @@
     <header id="header" class="header d-flex align-items-center sticky-top">
         <div class="container position-relative d-flex align-items-center justify-content-between">
 
-            <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+            <a href="/" class="logo d-flex align-items-center me-auto me-xl-0">
                 <!-- Uncomment the line below if you also wish to use an image logo -->
                 <!-- <img src="./img/logo.png" alt=""> -->
                 <h1 class="sitename">Yummy</h1>
@@ -79,7 +79,7 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle"  id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Xin chào @User.Identity.Name!
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -93,7 +93,7 @@
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="Dashboard">Nhân viên</a></li>
                                 <li><hr class="dropdown-divider"></li>
                             }
-                            <li><a class="dropdown-item" asp-area="" asp-controller="Customer" asp-action="Index">Hồ sơ của tôi</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="CustomerProfile" asp-action="Index">Hồ sơ của tôi</a></li>
                             <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Orders">Đơn hàng của tôi</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
