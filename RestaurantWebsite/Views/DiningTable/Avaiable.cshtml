@@ -1,0 +1,67 @@
+﻿@model IEnumerable<RestaurantWebsite.Models.DiningTable>
+
+@{
+    ViewData["Title"] = "Bàn trống";
+}
+
+<div class="container">
+    <h2>Bàn đang trống</h2>
+
+    <div class="mb-4">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Hiện tại không có bàn nào trống.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-success">
+                        <div class="position-absolute" style="top: 10px; right: 10px;">
+                            <span class="badge bg-success">Đang trống</span>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(item.Img))
+                        {
+                            <img src="@item.Img" class="card-img-top" alt="@item.TableName" style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <img src="~/images/default-table.jpg" class="card-img-top" alt="@item.TableName" style="height: 200px; object-fit: cover;">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title text-success">
+                                @item.TableName
+                            </h5>
+                            <p class="card-text">
+                                <i class="bi bi-geo-alt"></i> Vị trí: @(item.Location ?? "Chưa xác định")
+                            </p>
+                            <p class="card-text">
+                                <i class="bi bi-people"></i> Số lượng ghế: @item.Quantity
+                            </p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a asp-action="Details" asp-route-id="@item.TableId" class="btn btn-outline-success">
+                                <i class="bi bi-info-circle"></i> Chi tiết
+                            </a>
+
+                            <!-- This button would lead to booking form in a real application -->
+                            <a href="#" class="btn btn-success">
+                                <i class="bi bi-calendar-check"></i> Đặt bàn
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,120 @@
+﻿@model RestaurantWebsite.Models.DiningTable
+
+@{
+    ViewData["Title"] = "Chi tiết bàn ăn";
+}
+
+<div class="container">
+    <h2>Chi tiết bàn ăn</h2>
+
+    <div class="mb-4">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-5">
+            @if (!string.IsNullOrEmpty(Model.Img))
+            {
+                <img src="@Model.Img" class="img-fluid rounded" alt="@Model.TableName">
+            }
+            else
+            {
+                <img src="~/images/default-table.jpg" class="img-fluid rounded" alt="@Model.TableName">
+            }
+        </div>
+
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header">
+                    <h4>@Model.TableName</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Mã bàn:</dt>
+                        <dd class="col-sm-8">@Model.TableId</dd>
+
+                        <dt class="col-sm-4">Vị trí:</dt>
+                        <dd class="col-sm-8">@(Model.Location ?? "Chưa xác định")</dd>
+
+                        <dt class="col-sm-4">Số lượng ghế:</dt>
+                        <dd class="col-sm-8">@Model.Quantity</dd>
+
+                        <dt class="col-sm-4">Trạng thái:</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.IsAvailable)
+                            {
+                                <span class="badge bg-success">Đang trống</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Đang có khách</span>
+                            }
+                        </dd>
+                    </dl>
+
+                    @if (Model.IsAvailable)
+                    {
+                        <div class="mt-4">
+                            <a href="#" class="btn btn-success">
+                                <i class="bi bi-calendar-check"></i> Đặt bàn
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (Model.OrderServices.Any())
+            {
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Lịch sử sử dụng</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Khách hàng</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+@*                                 @foreach (var order in Model.OrderServices.OrderByDescending(o => o.StartTime))
+                                {
+                                    <tr>
+                                        <td>@order.OrderId</td>
+                                        <td>@order.OrderDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>@(order.Customer?.CustomerName ?? "Khách vãng lai")</td>
+                                        <td>
+                                            @switch (order.Status)
+                                            {
+                                                case "Pending":
+                                                    <span class="badge bg-warning">Đang chờ</span>
+                                                    break;
+                                                case "In Progress":
+                                                    <span class="badge bg-primary">Đang phục vụ</span>
+                                                    break;
+                                                case "Completed":
+                                                    <span class="badge bg-success">Hoàn thành</span>
+                                                    break;
+                                                case "Cancelled":
+                                                    <span class="badge bg-danger">Đã hủy</span>
+                                                    break;
+                                                default:
+                                                    <span class="badge bg-secondary">@order.Status</span>
+                                                    break;
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+ *@                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
