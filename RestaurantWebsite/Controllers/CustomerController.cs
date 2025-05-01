@@ -1,127 +1,197 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using RestaurantWebsite.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RestaurantWebsite.Controllers
 {
-    [Authorize] // Yêu cầu đăng nhập
-    public class CustomerController : Controller
+    [Authorize] // Ensures only logged-in users can access this controller
+    public class CustomerProfileController : Controller
     {
         private readonly RestaurantContext _context;
 
-        public CustomerController(RestaurantContext context)
+        public CustomerProfileController(RestaurantContext context)
         {
             _context = context;
         }
 
-        // GET: Hiển thị hồ sơ khách hàng
+        // GET: CustomerProfile
         public async Task<IActionResult> Index()
         {
-            // Lấy UserId từ Claims
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var customer = await _context.Customers
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.UserAccounts.UserId == userId);
+            // Get the current user's username
+            var username = User.Identity.Name;
 
-            if (customer == null)
+            // Find the user account
+            var userAccount = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
+            if (userAccount == null)
             {
-                // Nếu chưa có hồ sơ, tạo mới
-                customer = new Customer { UserId = userId };
-                _context.Customers.Add(customer);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
+            // Find the customer associated with this user account
+            var customer = _context.Customers.FirstOrDefault(c => c.CustomerId == userAccount.CustomerId);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            // Pass the customer data to the view
             return View(customer);
         }
 
-        // GET: Form chỉnh sửa hồ sơ
+        // GET: CustomerProfile/Edit
         public async Task<IActionResult> Edit()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+            // Get the current user's username
+            var username = User.Identity.Name;
 
+            // Find the user account
+            var userAccount = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
+            if (userAccount == null)
+            {
+                return NotFound();
+            }
+
+            // Find the customer associated with this user account
+            var customer = _context.Customers.FirstOrDefault(c => c.CustomerId == userAccount.CustomerId);
             if (customer == null)
             {
                 return NotFound();
             }
 
+            // Send both customer and user account to the view
+            ViewBag.UserAccount = userAccount;
             return View(customer);
         }
 
-        // POST: Cập nhật hồ sơ
+        // POST: CustomerProfile/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Customer customer)
+        public async Task<IActionResult> Edit(int id, Customer customer, string email, IFormFile imageFile)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(customer);
-            }
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var existingCustomer = await _context.Customers
-                .FirstOrDefaultAsync(c => c.UserId == userId);
-
-            if (existingCustomer == null)
+            if (id != customer.CustomerId)
             {
                 return NotFound();
             }
 
-            // Cập nhật thông tin
-            existingCustomer.CustomerName = customer.CustomerName;
-            existingCustomer.PhoneNumber = customer.PhoneNumber;
-            existingCustomer.Address = customer.Address;
-
-            try
+            if (ModelState.IsValid)
             {
-                _context.Update(existingCustomer);
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Hồ sơ đã được cập nhật thành công!";
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Không thể cập nhật hồ sơ. Vui lòng thử lại.");
-                return View(customer);
-            }
-        }
+                try
+                {
+                    // Update customer information
+                    var existingCustomer = _context.Customers.Find(id);
+                    if (existingCustomer == null)
+                    {
+                        return NotFound();
+                    }
 
-        // GET: Form xác nhận xóa tài khoản
-        public async Task<IActionResult> Delete()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+                    existingCustomer.CustomerName = customer.CustomerName;
+                    existingCustomer.Address = customer.Address;
+                    existingCustomer.PhoneNumber = customer.PhoneNumber;
+                    existingCustomer.DateOfBirth = customer.DateOfBirth;
 
-            if (customer == null)
-            {
-                return NotFound();
+                    // Process image upload if provided
+                    if (imageFile != null && imageFile.Length > 0)
+                    {
+                        // Create a unique filename
+                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/customers", fileName);
+
+                        // Ensure directory exists
+                        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+                        // Save the file
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await imageFile.CopyToAsync(stream);
+                        }
+
+                        // Update the image path in the database
+                        existingCustomer.Img = "/images/customers/" + fileName;
+                    }
+
+                    // Update user account email if provided
+                    if (!string.IsNullOrEmpty(email))
+                    {
+                        var userAccount = _context.UserAccounts.FirstOrDefault(u => u.CustomerId == id);
+                        if (userAccount != null)
+                        {
+                            userAccount.Email = email;
+                            _context.Update(userAccount);
+                        }
+                    }
+
+                    _context.Update(existingCustomer);
+                    await _context.SaveChangesAsync();
+
+                    // Redirect to the profile page after successful update
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    // Log the error
+                    ModelState.AddModelError(string.Empty, "An error occurred: " + ex.Message);
+
+                    // If there's an error, return to the edit form
+                    // We need to send the user account data again
+                    ViewBag.UserAccount = _context.UserAccounts.FirstOrDefault(u => u.CustomerId == id);
+                    return View(customer);
+                }
             }
 
+            // If model state is invalid, repopulate the ViewBag and return to the view
+            ViewBag.UserAccount = _context.UserAccounts.FirstOrDefault(u => u.CustomerId == id);
             return View(customer);
         }
 
-        // POST: Xóa tài khoản
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed()
+        // GET: CustomerProfile/ChangePassword
+        public IActionResult ChangePassword()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+            return View();
+        }
 
-            if (customer != null)
+        // POST: CustomerProfile/ChangePassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmPassword)
+        {
+            if (string.IsNullOrEmpty(currentPassword) || string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword))
             {
-                _context.Customers.Remove(customer);
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Tài khoản đã được xóa thành công!";
-                // Đăng xuất sau khi xóa
-                return RedirectToAction("Logout", "Account");
+                ModelState.AddModelError(string.Empty, "All fields are required.");
+                return View();
             }
+
+            if (newPassword != confirmPassword)
+            {
+                ModelState.AddModelError(string.Empty, "New password and confirmation do not match.");
+                return View();
+            }
+
+            // Get current user
+            var username = User.Identity.Name;
+            var userAccount = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
+
+            if (userAccount == null)
+            {
+                return NotFound();
+            }
+
+            // Validate current password
+            // In a real application, you would use a proper password hashing mechanism
+            if (userAccount.PasswordHash != currentPassword) // This is simplified; use proper hashing in production
+            {
+                ModelState.AddModelError(string.Empty, "Current password is incorrect.");
+                return View();
+            }
+
+            // Update password
+            userAccount.PasswordHash = newPassword; // In production, hash the password
+            _context.Update(userAccount);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }

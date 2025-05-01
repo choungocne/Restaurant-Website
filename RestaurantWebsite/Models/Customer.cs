@@ -14,10 +14,11 @@ public partial class Customer
     public string? PhoneNumber { get; set; }
 
     public string? Img { get; set; }
-
+    public DateTime? DateOfBirth { get; set; }
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
     public virtual ICollection<OrderService> OrderServices { get; set; } = new List<OrderService>();
-    public string UserId { get; set; } // Khóa ngoại liên kết với UserAccount.Id
-    public UserAccount UserAccount { get; set; }
+    public virtual ICollection<UserAccount> UserAccounts { get; set; } = new List<UserAccount>();
+
+ 
 }
