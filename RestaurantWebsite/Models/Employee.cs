@@ -18,6 +18,7 @@ public partial class Employee
     public string? Detail { get; set; }
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+    public virtual ICollection<TableReservation> TableReservations { get; set; } = new List<TableReservation>();
 
     public virtual ICollection<UserAccount> UserAccounts { get; set; } = new List<UserAccount>();
 }

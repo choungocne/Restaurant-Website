@@ -35,7 +35,7 @@ public partial class RestaurantContext : DbContext
     public virtual DbSet<Payment> Payments { get; set; }
 
     public virtual DbSet<UserAccount> UserAccounts { get; set; }
-
+    public virtual DbSet<TableReservation> TableReservations { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=LAPTOP-GIDJRRBE;Initial Catalog=Restaurant;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
@@ -242,6 +242,38 @@ public partial class RestaurantContext : DbContext
                 .HasConstraintName("FK__UserAccou__Emplo__48CFD27E");
         });
 
+
+        // Add this to the OnModelCreating method in RestaurantContext
+        modelBuilder.Entity<TableReservation>(entity =>
+        {
+            entity.HasKey(e => e.ReservationId).HasName("PK__TableRes__B7EE5F0425FB61A3");
+
+            entity.ToTable("TableReservation");
+
+            entity.Property(e => e.ReservationId).HasColumnName("ReservationID");
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.TableId).HasColumnName("TableID");
+            entity.Property(e => e.EmployeeId).HasColumnName("EmployeeID");
+            entity.Property(e => e.StartTime).HasColumnType("datetime");
+            entity.Property(e => e.EndTime).HasColumnType("datetime");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.TableReservations)
+                .HasForeignKey(d => d.CustomerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__TableRes__Custo__67DE6983");
+
+            entity.HasOne(d => d.Table).WithMany(p => p.TableReservations)
+                .HasForeignKey(d => d.TableId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__TableRes__Table__66EA454A");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.TableReservations)
+                .HasForeignKey(d => d.EmployeeId)
+                .HasConstraintName("FK__TableRes__Employee__68D29DBC");
+        });
         OnModelCreatingPartial(modelBuilder);
     }
 

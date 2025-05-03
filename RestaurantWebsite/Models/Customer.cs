@@ -19,6 +19,7 @@ public partial class Customer
 
     public virtual ICollection<OrderService> OrderServices { get; set; } = new List<OrderService>();
     public virtual ICollection<UserAccount> UserAccounts { get; set; } = new List<UserAccount>();
+    public virtual ICollection<TableReservation> TableReservations { get; set; } = new List<TableReservation>();
 
- 
+
 }

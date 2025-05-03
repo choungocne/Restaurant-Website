@@ -16,4 +16,6 @@ public partial class DiningTable
     public bool IsAvailable { get; set; } = true;
 
     public virtual ICollection<OrderService> OrderServices { get; set; } = new List<OrderService>();
+    public virtual ICollection<TableReservation> TableReservations { get; set; } = new List<TableReservation>();
+
 }
