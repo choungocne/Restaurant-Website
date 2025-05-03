@@ -1,0 +1,257 @@
+﻿@model RestaurantWebsite.Models.TableReservation
+
+@{
+    ViewData["Title"] = "Đặt bàn";
+}
+
+<div class="container mt-4">
+    <h2>Đặt bàn</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Hidden field for CustomerId -->
+                <input type="hidden" asp-for="CustomerId" value="0" />
+
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Thông tin đặt bàn</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Customer Information -->
+                        <div class="form-group mb-3">
+                            <label class="control-label">Họ tên</label>
+                            <input name="Customer.FullName" class="form-control" required id="CustomerFullName" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="control-label">Email</label>
+                            <input name="Customer.Email" class="form-control" type="email" required id="CustomerEmail" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="control-label">Số điện thoại</label>
+                            <input name="Customer.Phone" class="form-control" required id="CustomerPhone" />
+                        </div>
+
+                        <!-- Table Selection -->
+                        <div class="form-group mb-3">
+                            <label for="TableId" class="control-label">Chọn bàn</label>
+                            <select asp-for="TableId" class="form-control" required>
+                                <option value="">-- Chọn bàn --</option>
+                                @foreach (var table in ViewBag.AvailableTables)
+                                {
+                                    <option value="@table.TableId" data-capacity="@table.NumberOfCustomer">
+                                        Bàn @table.TableId - @table.TableName (@table.NumberOfCustomer người)
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="TableId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="numberOfCustomers" class="control-label">Số lượng khách</label>
+                            <input type="number" id="numberOfCustomers" name="numberOfCustomers" class="form-control" min="1" required />
+                            <div id="capacityWarning" class="text-danger d-none">Số lượng khách vượt quá sức chứa của bàn</div>
+                        </div>
+
+                        <!-- Reservation Time -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="StartTime" class="control-label">Thời gian bắt đầu</label>
+                                    <input asp-for="StartTime" class="form-control" type="datetime-local" required />
+                                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="EndTime" class="control-label">Thời gian kết thúc</label>
+                                    <input asp-for="EndTime" class="form-control" type="datetime-local" required />
+                                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="timeRangeError" class="text-danger d-none mb-3">Thời gian kết thúc phải sau thời gian bắt đầu</div>
+                        <div id="availabilityMessage" class="mb-3"></div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Đặt món</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Menu items by category -->
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <h5>@category.CategoryName</h5>
+                            <div class="row mb-3">
+                                @foreach (var dish in category.Dishes)
+                                {
+                                    <div class="col-md-6 mb-2">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input dish-checkbox" type="checkbox"
+                                                           id="dish_@dish.DishId"
+                                                           data-dish-id="@dish.DishId"
+                                                           name="selectedDishIds"
+                                                           value="@dish.DishId">
+                                                    <label class="form-check-label" for="dish_@dish.DishId">
+                                                        @dish.DishName - @string.Format("{0:N0} VND", dish.UnitPrice)
+                                                    </label>
+                                                </div>
+                                                <div class="mt-2 dish-quantity-div d-none">
+                                                    <label>Số lượng:</label>
+                                                    <input type="number" name="dishQuantities"
+                                                           class="form-control dish-quantity"
+                                                           min="1" value="1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <!-- Special requests -->
+                        <div class="form-group mb-3">
+                            <label for="specialRequests" class="control-label">Yêu cầu đặc biệt</label>
+                            <textarea id="specialRequests" name="specialRequests" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <button type="submit" class="btn btn-primary">Đặt bàn</button>
+                    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Lưu ý khi đặt bàn</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Chỉ có thể đặt bàn từ 17:00 đến 23:00</li>
+                        <li>Không phục vụ vào ngày Chủ nhật</li>
+                        <li>Đặt bàn sẽ bị hủy tự động nếu không thanh toán trong vòng 30 phút</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Handle dish selection
+            $('.dish-checkbox').change(function() {
+                var quantityDiv = $(this).closest('.card-body').find('.dish-quantity-div');
+                if ($(this).is(':checked')) {
+                    quantityDiv.removeClass('d-none');
+                } else {
+                    quantityDiv.addClass('d-none');
+                }
+            });
+
+            // Check table availability when dates change
+            function checkAvailability() {
+                var tableId = $('#TableId').val();
+                var startTime = $('#StartTime').val();
+                var endTime = $('#EndTime').val();
+
+                if (tableId && startTime && endTime) {
+                    $.ajax({
+                        url: '@Url.Action("CheckTableAvailability")',
+                        type: 'GET',
+                        data: {
+                            tableId: tableId,
+                            startTime: startTime,
+                            endTime: endTime
+                        },
+                        success: function (result) {
+                            if (result.isAvailable) {
+                                $('#availabilityMessage').html('<div class="alert alert-success">Bàn khả dụng trong khoảng thời gian đã chọn</div>');
+                            } else {
+                                $('#availabilityMessage').html('<div class="alert alert-danger">' + result.message + '</div>');
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Check time range
+            function validateTimeRange() {
+                var startTime = new Date($('#StartTime').val());
+                var endTime = new Date($('#EndTime').val());
+
+                if (startTime && endTime) {
+                    if (startTime >= endTime) {
+                        $('#timeRangeError').removeClass('d-none');
+                        return false;
+                    } else {
+                        $('#timeRangeError').addClass('d-none');
+                        return true;
+                    }
+                }
+                return true;
+            }
+
+            // Check table capacity
+            function validateCapacity() {
+                var selectedOption = $('#TableId option:selected');
+                var capacity = selectedOption.data('capacity');
+                var customers = $('#numberOfCustomers').val();
+
+                if (capacity && customers) {
+                    if (parseInt(customers) > parseInt(capacity)) {
+                        $('#capacityWarning').removeClass('d-none');
+                        return false;
+                    } else {
+                        $('#capacityWarning').addClass('d-none');
+                        return true;
+                    }
+                }
+                return true;
+            }
+
+            // Bind events
+            $('#TableId, #StartTime, #EndTime').change(function() {
+                validateTimeRange();
+                checkAvailability();
+            });
+
+            $('#TableId, #numberOfCustomers').change(function() {
+                validateCapacity();
+            });
+
+            // Form validation
+            $('form').submit(function(e) {
+                if (!validateTimeRange() || !validateCapacity()) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Ensure we have a CustomerId even if it's a new customer
+                if ($('#CustomerId').val() === '0') {
+                    // This is a new customer - we're submitting the form with customer info
+                    // The controller will handle creating a new customer
+                }
+
+                return true;
+            });
+        });
+    </script>
+}
