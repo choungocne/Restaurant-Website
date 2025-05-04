@@ -22,4 +22,6 @@ public partial class OrderService
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual DiningTable Table { get; set; } = null!;
+    public virtual ICollection<TableReservation> TableReservations { get; set; } = new List<TableReservation>();
+
 }

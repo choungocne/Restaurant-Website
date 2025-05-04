@@ -273,6 +273,12 @@ public partial class RestaurantContext : DbContext
             entity.HasOne(d => d.Employee).WithMany(p => p.TableReservations)
                 .HasForeignKey(d => d.EmployeeId)
                 .HasConstraintName("FK__TableRes__Employee__68D29DBC");
+            entity.HasOne(d => d.OrderService)
+      .WithMany(p => p.TableReservations)
+      .HasForeignKey(d => d.ServiceId)
+      .OnDelete(DeleteBehavior.SetNull);
+
+
         });
         OnModelCreatingPartial(modelBuilder);
     }

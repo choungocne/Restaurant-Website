@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestaurantWebsite.Models;
 
@@ -9,6 +10,7 @@ public partial class TableReservation
     public int ReservationId { get; set; }
 
     public int CustomerId { get; set; }
+    public int? ServiceId { get; set; }
 
     public int TableId { get; set; }
 
@@ -25,16 +27,17 @@ public partial class TableReservation
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     // Navigation properties
-    public virtual Customer Customer { get; set; } = null!;
-    public virtual DiningTable Table { get; set; } = null!;
+    public virtual Customer? Customer { get; set; } = null!;
+    public virtual DiningTable? Table { get; set; } = null!;
     public virtual Employee? Employee { get; set; }
+    [ForeignKey("ServiceId")]
     public virtual OrderService? OrderService { get; set; }
 }
 
 public enum ReservationStatus
 {
-    Pending,
-    Confirmed,
-    Completed,
-    Cancelled
+    Pending = 0,
+    Confirmed = 1,
+    Completed=2,
+    Cancelled = 3
 }

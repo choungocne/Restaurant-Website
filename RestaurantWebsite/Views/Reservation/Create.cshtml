@@ -1,257 +1,477 @@
 ﻿@model RestaurantWebsite.Models.TableReservation
-
 @{
-    ViewData["Title"] = "Đặt bàn";
+    ViewData["Title"] = "Đặt Bàn Nhà Hàng";
+    var tables = ViewBag.AvailableTables as List<RestaurantWebsite.Models.DiningTable>;
+    var categories = ViewBag.Categories as List<RestaurantWebsite.Models.DishCategory>;
+    Layout = null;
+    var customerId = User.FindFirst("CustomerId")?.Value;
+    // Thiết lập ngày mặc định
+    var today = DateTime.Now;
+    var defaultDate = today.DayOfWeek == DayOfWeek.Sunday ? today.AddDays(1) : today;
+    var defaultStartTime = defaultDate.ToString("yyyy-MM-dd") + "T17:00";
+    var defaultEndTime = defaultDate.ToString("yyyy-MM-dd") + "T23:00";
 }
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt Bàn và Đặt Món</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #fff, #fee2e2);
+            overflow-x: hidden;
+        }
 
-<div class="container mt-4">
-    <h2>Đặt bàn</h2>
-    <hr />
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @@keyframes fadeIn {
+            0%
 
-    <div class="row">
-        <div class="col-md-8">
-            <form asp-action="Create" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
 
-                <!-- Hidden field for CustomerId -->
-                <input type="hidden" asp-for="CustomerId" value="0" />
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Thông tin đặt bàn</h5>
-                    </div>
-                    <div class="card-body">
-                        <!-- Customer Information -->
-                        <div class="form-group mb-3">
-                            <label class="control-label">Họ tên</label>
-                            <input name="Customer.FullName" class="form-control" required id="CustomerFullName" />
+        }
+
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+
+            .hover-scale:hover {
+                transform: scale(1.05);
+            }
+
+        .leaf {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: url('/img/leaf.png');
+            background-size: cover;
+            animation: fall 10s linear infinite;
+            z-index: 0;
+        }
+        @@keyframes fall {
+            0%
+
+        {
+            transform: translateY(-100vh) rotate(0deg);
+        }
+
+        100% {
+            transform: translateY(100vh) rotate(360deg);
+        }
+
+        }
+
+        .error {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .dish-img {
+            height: 100px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- Hiệu ứng lá rơi -->
+    <div class="leaf" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="leaf" style="left: 30%; animation-delay: 2s;"></div>
+    <div class="leaf" style="left: 50%; animation-delay: 4s;"></div>
+    <div class="leaf" style="left: 70%; animation-delay: 6s;"></div>
+    <div class="leaf" style="left: 90%; animation-delay: 8s;"></div>
+
+    <div class="container mx-auto p-6 fade-in">
+        <!-- Logo nhà hàng -->
+        <div class="text-center mb-6">
+            <img src="/img/logo.png" alt="EdenRed Logo" class="mx-auto w-24 h-24 rounded-full hover-scale" />
+            <h1 class="text-4xl font-bold text-red-600 mt-2">Đặt Bàn và Đặt Món Tại EdenRed</h1>
+        </div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
+        @if (string.IsNullOrEmpty(customerId))
+        {
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <p>Vui lòng đăng nhập để đặt bàn!</p>
+                <a href="/Account/Login" class="text-blue-500 hover:underline">Đăng nhập ngay</a>
+            </div>
+        }
+        else
+        {
+            <form id="reservationForm" asp-action="Create" method="post" class="bg-white p-8 rounded-lg shadow-lg">
+                <div asp-validation-summary="ModelOnly" class="text-red-600 mb-4"></div>
+                <!-- CustomerId -->
+                <input type="hidden" asp-for="CustomerId" value="@customerId" />
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Thông tin đặt bàn -->
+                    <div class="bg-white rounded-lg shadow-md">
+                        <div class="bg-red-500 text-white p-4 rounded-t-lg">
+                            <h5 class="text-lg font-semibold">Thông Tin Đặt Bàn</h5>
                         </div>
+                        <div class="p-6">
+                            <!-- Chọn bàn -->
+                            <div class="mb-4">
+                                <label asp-for="TableId" class="block text-gray-700 font-semibold">Chọn Bàn</label>
+                                <select asp-for="TableId" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500" required>
+                                    <option value="">-- Vui lòng chọn bàn --</option>
+                                    @foreach (var table in tables)
+                                    {
+                                        <option value="@table.TableId" data-capacity="@table.NumberOfCustomer">
+                                            @table.TableName
+                                        </option>
+                                    }
+                                </select>
+                                <span asp-validation-for="TableId" class="error"></span>
+                            </div>
 
-                        <div class="form-group mb-3">
-                            <label class="control-label">Email</label>
-                            <input name="Customer.Email" class="form-control" type="email" required id="CustomerEmail" />
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="control-label">Số điện thoại</label>
-                            <input name="Customer.Phone" class="form-control" required id="CustomerPhone" />
-                        </div>
-
-                        <!-- Table Selection -->
-                        <div class="form-group mb-3">
-                            <label for="TableId" class="control-label">Chọn bàn</label>
-                            <select asp-for="TableId" class="form-control" required>
-                                <option value="">-- Chọn bàn --</option>
-                                @foreach (var table in ViewBag.AvailableTables)
-                                {
-                                    <option value="@table.TableId" data-capacity="@table.NumberOfCustomer">
-                                        Bàn @table.TableId - @table.TableName (@table.NumberOfCustomer người)
-                                    </option>
-                                }
-                            </select>
-                            <span asp-validation-for="TableId" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="numberOfCustomers" class="control-label">Số lượng khách</label>
-                            <input type="number" id="numberOfCustomers" name="numberOfCustomers" class="form-control" min="1" required />
-                            <div id="capacityWarning" class="text-danger d-none">Số lượng khách vượt quá sức chứa của bàn</div>
-                        </div>
-
-                        <!-- Reservation Time -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="StartTime" class="control-label">Thời gian bắt đầu</label>
-                                    <input asp-for="StartTime" class="form-control" type="datetime-local" required />
-                                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                            <!-- Số lượng khách -->
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-semibold">Số Lượng Khách</label>
+                                <input type="number" name="numberOfCustomers" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500" min="1" required />
+                                <div id="capacityWarning" class="text-red-600 mt-1 hidden">
+                                    Số lượng khách vượt quá sức chứa của bàn!
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="EndTime" class="control-label">Thời gian kết thúc</label>
-                                    <input asp-for="EndTime" class="form-control" type="datetime-local" required />
-                                    <span asp-validation-for="EndTime" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="timeRangeError" class="text-danger d-none mb-3">Thời gian kết thúc phải sau thời gian bắt đầu</div>
-                        <div id="availabilityMessage" class="mb-3"></div>
-                    </div>
-                </div>
 
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Đặt món</h5>
+                            <!-- Thời gian bắt đầu -->
+                            <div class="mb-4">
+                                <label asp-for="StartTime" class="block text-gray-700 font-semibold">Thời Gian Bắt Đầu</label>
+                                <input asp-for="StartTime" type="datetime-local" value="@defaultStartTime" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500" required />
+                                <span asp-validation-for="StartTime" class="error"></span>
+                            </div>
+
+                            <!-- Thời gian kết thúc -->
+                            <div class="mb-4">
+                                <label asp-for="EndTime" class="block text-gray-700 font-semibold">Thời Gian Kết Thúc</label>
+                                <input asp-for="EndTime" type="datetime-local" value="@defaultEndTime" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500" required />
+                                <span asp-validation-for="EndTime" class="error"></span>
+                            </div>
+
+                            <!-- Cảnh báo thời gian -->
+                            <div id="timeWarning" class="bg-red-100 text-red-700 p-3 rounded hidden">
+                                Thời gian kết thúc phải sau thời gian bắt đầu!
+                            </div>
+                            <div id="sundayWarning" class="bg-red-100 text-red-700 p-3 rounded hidden">
+                                Không thể đặt bàn vào ngày Chủ Nhật!
+                            </div>
+                            <div id="timeRangeWarning" class="bg-red-100 text-red-700 p-3 rounded hidden">
+                                Chỉ có thể đặt bàn từ 17:00 đến 23:00!
+                            </div>
+
+                           
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <!-- Menu items by category -->
-                        @foreach (var category in ViewBag.Categories)
-                        {
-                            <h5>@category.CategoryName</h5>
-                            <div class="row mb-3">
-                                @foreach (var dish in category.Dishes)
+
+                    <!-- Đặt món -->
+                    <div class="bg-white rounded-lg shadow-md">
+                        <div class="bg-green-500 text-white p-4 rounded-t-lg">
+                            <h5 class="text-lg font-semibold">Đặt Món</h5>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                @foreach (var category in categories)
                                 {
-                                    <div class="col-md-6 mb-2">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="form-check">
-                                                    <input class="form-check-input dish-checkbox" type="checkbox"
-                                                           id="dish_@dish.DishId"
-                                                           data-dish-id="@dish.DishId"
-                                                           name="selectedDishIds"
-                                                           value="@dish.DishId">
-                                                    <label class="form-check-label" for="dish_@dish.DishId">
-                                                        @dish.DishName - @string.Format("{0:N0} VND", dish.UnitPrice)
-                                                    </label>
-                                                </div>
-                                                <div class="mt-2 dish-quantity-div d-none">
-                                                    <label>Số lượng:</label>
-                                                    <input type="number" name="dishQuantities"
-                                                           class="form-control dish-quantity"
-                                                           min="1" value="1">
-                                                </div>
+                                    <div class="border rounded-lg">
+                                        <h2 class="bg-gray-100 p-3 text-lg font-medium text-gray-800 cursor-pointer" data-toggle="collapse" data-target="#collapse@(category.CategoryId)">
+                                            @category.CategoryName
+                                        </h2>
+                                        <div id="collapse@(category.CategoryId)" class="p-4 hidden">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                @foreach (var dish in category.Dishes)
+                                                {
+                                                    <div class="bg-gray-50 p-3 rounded-lg hover:bg-red-50 hover-scale">
+                                                        @if (!string.IsNullOrEmpty(dish.Img))
+                                                        {
+                                                            <img src="/images/dishes/@dish.Img" class="dish-img w-full rounded mb-2" alt="@dish.DishName" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="/img/dishes/default-dish.jpg" class="dish-img w-full rounded mb-2" alt="@dish.DishName" />
+                                                        }
+                                                        <h6 class="font-semibold">@dish.DishName</h6>
+                                                        <p class="text-red-600">@dish.UnitPrice.ToString("N0") VNĐ</p>
+                                                        <div class="flex items-center mt-2">
+                                                            <input class="dish-checkbox mr-2" type="checkbox" name="dishIds" value="@dish.DishId" id="dish@(dish.DishId)" />
+                                                            <label for="dish@(dish.DishId)">Chọn món</label>
+                                                        </div>
+                                                        <div class="dish-quantity hidden mt-2">
+                                                            <label class="text-sm">Số lượng</label>
+                                                            <input type="number" name="quantities" class="w-full p-2 border rounded" value="1" min="1" />
+                                                        </div>
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>
                                 }
                             </div>
-                        }
-
-                        <!-- Special requests -->
-                        <div class="form-group mb-3">
-                            <label for="specialRequests" class="control-label">Yêu cầu đặc biệt</label>
-                            <textarea id="specialRequests" name="specialRequests" class="form-control" rows="3"></textarea>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group mb-3">
-                    <button type="submit" class="btn btn-primary">Đặt bàn</button>
-                    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                <!-- Yêu cầu thêm -->
+                <div class="bg-white rounded-lg shadow-md mt-6">
+                    <div class="bg-blue-500 text-white p-4 rounded-t-lg">
+                        <h5 class="text-lg font-semibold">Yêu Cầu Thêm</h5>
+                    </div>
+                    <div class="p-6">
+                        <label class="block text-gray-700 font-semibold">Yêu Cầu Đặc Biệt</label>
+                        <textarea name="specialRequests" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500" rows="3" placeholder="Nhập yêu cầu đặc biệt nếu có (dị ứng, sắp xếp chỗ ngồi, v.v...)"></textarea>
+                    </div>
+                </div>
+
+                <!-- Tổng kết đơn đặt -->
+                <div class="bg-white rounded-lg shadow-md mt-6">
+                    <div class="bg-gray-800 text-white p-4 rounded-t-lg">
+                        <h5 class="text-lg font-semibold">Tổng Kết Đơn Đặt</h5>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h6>Thông tin bàn: <span id="tableSummary">Chưa chọn</span></h6>
+                                <h6>Số người: <span id="customerCountSummary">0</span></h6>
+                                <h6>Thời gian: <span id="timeSummary">Chưa chọn</span></h6>
+                            </div>
+                            <div>
+                                <h6>Món đã chọn:</h6>
+                                <ul id="selectedDishes" class="space-y-2">
+                                    <li class="bg-gray-100 p-2 rounded">Chưa chọn món nào</li>
+                                </ul>
+                                <h6 class="mt-3">Tổng tiền tạm tính: <span id="totalPrice" class="text-red-600 font-bold">0 VNĐ</span></h6>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <p class="text-red-600">Lưu ý: Vui lòng thanh toán trong vòng 30 phút sau khi đặt bàn. Nếu không, đơn đặt của bạn sẽ tự động bị hủy.</p>
+                            <button type="submit" class="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 hover-scale mt-4">Xác Nhận Đặt Bàn</button>
+                        </div>
+                    </div>
                 </div>
             </form>
-        </div>
-        <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Lưu ý khi đặt bàn</h5>
-                </div>
-                <div class="card-body">
-                    <ul>
-                        <li>Chỉ có thể đặt bàn từ 17:00 đến 23:00</li>
-                        <li>Không phục vụ vào ngày Chủ nhật</li>
-                        <li>Đặt bàn sẽ bị hủy tự động nếu không thanh toán trong vòng 30 phút</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        }
     </div>
-</div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
 
     <script>
         $(document).ready(function () {
-            // Handle dish selection
-            $('.dish-checkbox').change(function() {
-                var quantityDiv = $(this).closest('.card-body').find('.dish-quantity-div');
+            // Xác thực form
+            $("#reservationForm").validate({
+                rules: {
+                    CustomerId: { required: true },
+                    TableId: { required: true },
+                    numberOfCustomers: { required: true, min: 1 },
+                    StartTime: {
+                        required: true,
+                        validDateTime: true
+                    },
+                    EndTime: {
+                        required: true,
+                        validDateTime: true
+                    }
+                },
+                messages: {
+                    CustomerId: "Vui lòng đăng nhập để đặt bàn",
+                    TableId: "Vui lòng chọn bàn",
+                    numberOfCustomers: "Vui lòng nhập số lượng khách (tối thiểu 1)",
+                    StartTime: {
+                        required: "Vui lòng chọn thời gian bắt đầu",
+                        validDateTime: "Thời gian không hợp lệ (Chủ Nhật không đặt được, chỉ từ 17:00-23:00)"
+                    },
+                    EndTime: {
+                        required: "Vui lòng chọn thời gian kết thúc",
+                        validDateTime: "Thời gian không hợp lệ (Chủ Nhật không đặt được, chỉ từ 17:00-23:00)"
+                    }
+                },
+                errorElement: "span",
+                errorClass: "error",
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element);
+                }
+            });
+
+            // Phương thức xác thực tùy chỉnh cho ngày và giờ
+            $.validator.addMethod("validDateTime", function (value, element) {
+                if (!value) return false;
+                const date = new Date(value);
+                const day = date.getDay(); // 0 = Chủ Nhật
+                const hours = date.getHours();
+                // Chặn ngày Chủ Nhật
+                if (day === 0) return false;
+                // Chỉ cho phép 17:00-23:00
+                return hours >= 17 && hours <= 23;
+            }, "Thời gian không hợp lệ (Chủ Nhật không đặt được, chỉ từ 17:00-23:00)");
+
+            // Toggle collapse cho danh mục món
+            $('[data-toggle="collapse"]').click(function () {
+                const target = $(this).data('target');
+                $(target).toggleClass('hidden');
+            });
+
+            // Hiển thị số lượng khi chọn món
+            $('.dish-checkbox').change(function () {
+                const quantityInput = $(this).closest('.bg-gray-50').find('.dish-quantity');
                 if ($(this).is(':checked')) {
-                    quantityDiv.removeClass('d-none');
+                    quantityInput.removeClass('hidden');
                 } else {
-                    quantityDiv.addClass('d-none');
+                    quantityInput.addClass('hidden');
                 }
+                updateOrderSummary();
             });
 
-            // Check table availability when dates change
-            function checkAvailability() {
-                var tableId = $('#TableId').val();
-                var startTime = $('#StartTime').val();
-                var endTime = $('#EndTime').val();
+            // Kiểm tra sức chứa
+            $('input[name="numberOfCustomers"]').on('input', function () {
+                const customerCount = parseInt($(this).val()) || 0;
+                const selectedTable = $('#TableId option:selected');
+                const tableCapacity = parseInt(selectedTable.data('capacity')) || Infinity;
+                $('#capacityWarning').toggle(customerCount > tableCapacity);
+                updateOrderSummary();
+            });
 
-                if (tableId && startTime && endTime) {
-                    $.ajax({
-                        url: '@Url.Action("CheckTableAvailability")',
-                        type: 'GET',
-                        data: {
-                            tableId: tableId,
-                            startTime: startTime,
-                            endTime: endTime
-                        },
-                        success: function (result) {
-                            if (result.isAvailable) {
-                                $('#availabilityMessage').html('<div class="alert alert-success">Bàn khả dụng trong khoảng thời gian đã chọn</div>');
-                            } else {
-                                $('#availabilityMessage').html('<div class="alert alert-danger">' + result.message + '</div>');
-                            }
-                        }
-                    });
-                }
+            // Cập nhật thông tin bàn
+            $('#TableId').change(function () {
+                const selectedOption = $('option:selected', this);
+                $('#tableSummary').text(selectedOption.val() ? selectedOption.text() : 'Chưa chọn');
+                $('input[name="numberOfCustomers"]').trigger('input');
+            });
+
+            // Kiểm tra thời gian
+            $('#StartTime, #EndTime').change(function () {
+                const startTime = new Date($('#StartTime').val());
+                const endTime = new Date($('#EndTime').val());
+                const startDay = startTime.getDay();
+                const startHours = startTime.getHours();
+                const endDay = endTime.getDay();
+                const endHours = endTime.getHours();
+
+                // Kiểm tra ngày Chủ Nhật
+                $('#sundayWarning').toggle(startDay === 0 || endDay === 0);
+                // Kiểm tra khoảng giờ 17:00-23:00
+                $('#timeRangeWarning').toggle(
+                    (startHours < 17 || startHours > 23) || (endHours < 17 || endHours > 23)
+                );
+                // Kiểm tra thời gian kết thúc sau bắt đầu
+                $('#timeWarning').toggle(endTime <= startTime);
+
+                updateOrderSummary();
+            });
+                    $('.dish-checkbox').change(function () {
+            const container = $(this).closest('.bg-gray-50');
+            const quantityInput = container.find('.dish-quantity input');
+
+            if ($(this).is(':checked')) {
+                container.find('.dish-quantity').removeClass('hidden');
+                quantityInput.prop('disabled', false);
+            } else {
+                container.find('.dish-quantity').addClass('hidden');
+                quantityInput.prop('disabled', true);
             }
 
-            // Check time range
-            function validateTimeRange() {
-                var startTime = new Date($('#StartTime').val());
-                var endTime = new Date($('#EndTime').val());
+            updateOrderSummary();
+        });
 
+            // Cập nhật tổng kết đơn hàng
+            function updateOrderSummary() {
+                // Số người
+                const customerCount = $('input[name="numberOfCustomers"]').val() || '0';
+                $('#customerCountSummary').text(customerCount);
+
+                // Thời gian
+                const startTime = $('#StartTime').val();
+                const endTime = $('#EndTime').val();
                 if (startTime && endTime) {
-                    if (startTime >= endTime) {
-                        $('#timeRangeError').removeClass('d-none');
-                        return false;
-                    } else {
-                        $('#timeRangeError').addClass('d-none');
-                        return true;
-                    }
+                    const formattedStart = new Date(startTime).toLocaleString('vi-VN');
+                    const formattedEnd = new Date(endTime).toLocaleString('vi-VN');
+                    $('#timeSummary').text(`${formattedStart} đến ${formattedEnd}`);
+                } else {
+                    $('#timeSummary').text('Chưa chọn');
                 }
-                return true;
+
+                // Món đã chọn
+                const selectedDishes = [];
+                let totalPrice = 0;
+                $('.dish-checkbox:checked').each(function () {
+                    const dishId = $(this).val();
+                    const dishCard = $(this).closest('.bg-gray-50');
+                    const dishName = dishCard.find('h6').text();
+                    const priceText = dishCard.find('.text-red-600').text();
+                    const price = parseFloat(priceText.replace(/[^\d]/g, ''));
+                    const quantity = parseInt(dishCard.find('.dish-quantity input').val()) || 1;
+                    selectedDishes.push(`${dishName} x ${quantity} = ${(price * quantity).toLocaleString('vi-VN')} VNĐ`);
+                    totalPrice += price * quantity;
+                });
+
+                $('#selectedDishes').html(
+                    selectedDishes.length > 0
+                        ? selectedDishes.map(dish => `<li class="bg-gray-100 p-2 rounded">${dish}</li>`).join('')
+                        : '<li class="bg-gray-100 p-2 rounded">Chưa chọn món nào</li>'
+                );
+                $('#totalPrice').text(`${totalPrice.toLocaleString('vi-VN')} VNĐ`);
             }
 
-            // Check table capacity
-            function validateCapacity() {
-                var selectedOption = $('#TableId option:selected');
-                var capacity = selectedOption.data('capacity');
-                var customers = $('#numberOfCustomers').val();
+            // Kiểm tra khả dụng của bàn
+            $('#checkAvailability').click(function () {
+                const tableId = $('#TableId').val();
+                const startTime = $('#StartTime').val();
+                const endTime = $('#EndTime').val();
 
-                if (capacity && customers) {
-                    if (parseInt(customers) > parseInt(capacity)) {
-                        $('#capacityWarning').removeClass('d-none');
-                        return false;
-                    } else {
-                        $('#capacityWarning').addClass('d-none');
-                        return true;
+                if (!tableId || !startTime || !endTime) {
+                    $('#availabilityResult').html('<div class="bg-yellow-100 text-yellow-700 p-3 rounded">Vui lòng chọn bàn và thời gian</div>');
+                    return;
+                }
+
+                // Kiểm tra ngày và giờ trước khi gọi API
+                const startDate = new Date(startTime);
+                const endDate = new Date(endTime);
+                if (startDate.getDay() === 0 || endDate.getDay() === 0) {
+                    $('#availabilityResult').html('<div class="bg-red-100 text-red-700 p-3 rounded">Không thể đặt bàn vào ngày Chủ Nhật!</div>');
+                    return;
+                }
+                if (startDate.getHours() < 17 || startDate.getHours() > 23 || endDate.getHours() < 17 || endDate.getHours() > 23) {
+                    $('#availabilityResult').html('<div class="bg-red-100 text-red-700 p-3 rounded">Chỉ có thể đặt bàn từ 17:00 đến 23:00!</div>');
+                    return;
+                }
+
+                $('#availabilityResult').html('<div class="flex items-center"><svg class="animate-spin h-5 w-5 mr-2 text-blue-500" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" /></svg> Đang kiểm tra...</div>');
+
+                $.ajax({
+                    url: '/Reservation/CheckTableAvailability',
+                    type: 'GET',
+                    data: { tableId: tableId, startTime: startTime, endTime: endTime },
+                    success: function (result) {
+                        $('#availabilityResult').html(
+                            result.isAvailable
+                                ? '<div class="bg-green-100 text-green-700 p-3 rounded">Bàn khả dụng trong khoảng thời gian đã chọn!</div>'
+                                : '<div class="bg-red-100 text-red-700 p-3 rounded">Bàn đã được đặt trong khoảng thời gian này!</div>'
+                        );
+                    },
+                    error: function () {
+                        $('#availabilityResult').html('<div class="bg-red-100 text-red-700 p-3 rounded">Lỗi khi kiểm tra, vui lòng thử lại!</div>');
                     }
-                }
-                return true;
-            }
-
-            // Bind events
-            $('#TableId, #StartTime, #EndTime').change(function() {
-                validateTimeRange();
-                checkAvailability();
-            });
-
-            $('#TableId, #numberOfCustomers').change(function() {
-                validateCapacity();
-            });
-
-            // Form validation
-            $('form').submit(function(e) {
-                if (!validateTimeRange() || !validateCapacity()) {
-                    e.preventDefault();
-                    return false;
-                }
-
-                // Ensure we have a CustomerId even if it's a new customer
-                if ($('#CustomerId').val() === '0') {
-                    // This is a new customer - we're submitting the form with customer info
-                    // The controller will handle creating a new customer
-                }
-
-                return true;
+                });
             });
         });
     </script>
-}
+</body>
+</html>

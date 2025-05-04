@@ -32,6 +32,7 @@ namespace RestaurantWebsite.Controllers
             ViewBag.Categories = _context.DishCategories
                 .Include(c => c.Dishes)
                 .ToList();
+            ViewBag.Dishes = _context.Dishes.ToList();
 
             return View(new TableReservation());
         }
@@ -39,176 +40,80 @@ namespace RestaurantWebsite.Controllers
         // Xử lý đặt bàn
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TableReservation reservation, int numberOfCustomers, List<int> selectedDishIds, List<int> dishQuantities, string specialRequests)
+       
+        public async Task<IActionResult> Create(TableReservation reservation, List<int> dishIds, List<int> quantities)
         {
-            // Loại bỏ các trường khỏi ModelState để tránh lỗi xác thực
-            ModelState.Remove("TableId");
-            ModelState.Remove("CustomerId");
-            ModelState.Remove("Customer");
-            ModelState.Remove("Table");
+            if (ModelState.ContainsKey("TableId"))
+                ModelState["TableId"].Errors.Clear();
 
-            if (!ModelState.IsValid)
+            if (ModelState.ContainsKey("CustomerId"))
+                ModelState["CustomerId"].Errors.Clear();
+
+            if (ModelState.IsValid)
             {
-                ViewBag.AvailableTables = await _context.DiningTables
-                    .Where(t => t.IsAvailable)
-                    .ToListAsync();
-
-                ViewBag.Categories = await _context.DishCategories
-                    .Include(c => c.Dishes)
-                    .ToListAsync();
-
-                return View(reservation);
-            }
-
-            // Kiểm tra và tạo/cập nhật thông tin khách hàng
-            Customer customer;
-            if (Request.Form.ContainsKey("Customer.CustomerId"))
-            {
-                string name = Request.Form["Customer.FullName"].ToString();
-                string phone = Request.Form["Customer.Phone"].ToString();
-
-                customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerName == name);
-
-                if (customer == null)
+                if (reservation.TableId == 0 || reservation.CustomerId == 0)
                 {
-                    // Tạo khách hàng mới
-                    customer = new Customer
-                    {
-                        CustomerName = name,
-                    
-                        PhoneNumber = phone
-                    };
-                    _context.Customers.Add(customer);
-                    await _context.SaveChangesAsync();
-                }
-
-                // Gán CustomerId cho đơn đặt bàn
-                reservation.CustomerId = customer.CustomerId;
-            }
-            else
-            {
-                ModelState.AddModelError("", "Thông tin khách hàng là bắt buộc");
-                ViewBag.AvailableTables = await _context.DiningTables
-                    .Where(t => t.IsAvailable)
-                    .ToListAsync();
-                ViewBag.Categories = await _context.DishCategories
-                    .Include(c => c.Dishes)
-                    .ToListAsync();
-                return View(reservation);
-            }
-
-            // Kiểm tra bàn có tồn tại không
-            var table = await _context.DiningTables.FindAsync(reservation.TableId);
-            if (table == null)
-            {
-                ModelState.AddModelError("", "Không tìm thấy bàn");
-                ViewBag.AvailableTables = await _context.DiningTables
-                    .Where(t => t.IsAvailable)
-                    .ToListAsync();
-                ViewBag.Categories = await _context.DishCategories
-                    .Include(c => c.Dishes)
-                    .ToListAsync();
-                return View(reservation);
-            }
-
-            if (numberOfCustomers > table.NumberOfCustomer)
-            {
-                ModelState.AddModelError("", $"Số lượng khách ({numberOfCustomers}) vượt quá sức chứa của bàn ({table.NumberOfCustomer})");
-                ViewBag.AvailableTables = await _context.DiningTables
-                    .Where(t => t.IsAvailable)
-                    .ToListAsync();
-                ViewBag.Categories = await _context.DishCategories
-                    .Include(c => c.Dishes)
-                    .ToListAsync();
-                return View(reservation);
-            }
-
-            // Kiểm tra bàn có sẵn trong khoảng thời gian đã chọn
-            var isAvailable = await CheckTableAvailabilityAsync(reservation.TableId, reservation.StartTime, reservation.EndTime);
-            if (!isAvailable.isAvailable)
-            {
-                ModelState.AddModelError("", "Bàn này đã được đặt trong khoảng thời gian đã chọn");
-                ViewBag.AvailableTables = await _context.DiningTables
-                    .Where(t => t.IsAvailable)
-                    .ToListAsync();
-                ViewBag.Categories = await _context.DishCategories
-                    .Include(c => c.Dishes)
-                    .ToListAsync();
-                return View(reservation);
-            }
-
-            // Tạo đơn đặt bàn
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    // Lưu thông tin đặt bàn
-                    reservation.Status = ReservationStatus.Pending;
-                    reservation.CreatedAt = DateTime.Now;
-                    _context.TableReservations.Add(reservation);
-                    await _context.SaveChangesAsync();
-
-                    // Tạo dịch vụ đặt món
-                    var orderService = new OrderService
-                    {
-                        TableId = reservation.TableId,
-                        CustomerId = reservation.CustomerId,
-                        StartTime = reservation.StartTime,
-                        EndTime = reservation.EndTime,
-                    };
-                    _context.OrderServices.Add(orderService);
-                    await _context.SaveChangesAsync();
-
-                    // Liên kết OrderService với Reservation
-                    reservation.OrderService = orderService;
-                    await _context.SaveChangesAsync();
-
-                    // Thêm món ăn vào đơn hàng
-                    if (selectedDishIds != null && selectedDishIds.Count > 0)
-                    {
-                        for (int i = 0; i < selectedDishIds.Count; i++)
-                        {
-                            int dishId = selectedDishIds[i];
-                            int quantity = i < dishQuantities.Count ? dishQuantities[i] : 1;
-
-                            var dish = await _context.Dishes.FindAsync(dishId);
-                            if (dish != null)
-                            {
-                                var orderDish = new OrderDish
-                                {
-                                    ServiceId = orderService.ServiceId,
-                                    DishId = dishId,
-                                    Quantity = quantity,
-                                    UnitPrice = dish.UnitPrice
-                                };
-                                _context.OrderDishes.Add(orderDish);
-                            }
-                        }
-                        await _context.SaveChangesAsync();
-                    }
-
-                    // Thiết lập hẹn giờ hủy nếu không thanh toán trong 30 phút
-                    StartPaymentTimer(reservation.ReservationId);
-
-                    // Commit transaction
-                    await transaction.CommitAsync();
-
-                    return RedirectToAction("Confirmation", new { id = reservation.ReservationId });
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    ModelState.AddModelError("", $"Lỗi khi đặt bàn: {ex.Message}");
-                    ViewBag.AvailableTables = await _context.DiningTables
-                        .Where(t => t.IsAvailable)
-                        .ToListAsync();
-                    ViewBag.Categories = await _context.DishCategories
-                        .Include(c => c.Dishes)
-                        .ToListAsync();
+                    ModelState.AddModelError(string.Empty, "Bạn cần chọn khách hàng và bàn trước khi đặt lịch.");
                     return View(reservation);
                 }
+
+                // 1. Tạo OrderService gắn với lịch này
+                var orderService = new OrderService
+                {
+                    CustomerId = reservation.CustomerId,
+                    TableId = reservation.TableId,
+                    StartTime = reservation.StartTime,
+                    EndTime = reservation.EndTime
+                };
+                _context.OrderServices.Add(orderService);
+                await _context.SaveChangesAsync();
+
+                // 2. Tạo danh sách OrderDish (từ dishIds & quantities)
+                for (int i = 0; i < dishIds.Count; i++)
+                {
+                    var dish = await _context.Dishes.FindAsync(dishIds[i]);
+                    if (dish == null) continue;
+
+                    var orderDish = new OrderDish
+                    {
+                        ServiceId = orderService.ServiceId,
+                        DishId = dishIds[i],
+                        Quantity = quantities[i],
+                        UnitPrice = dish.UnitPrice
+                    };
+
+                    _context.OrderDishes.Add(orderDish);
+                }
+
+                // 3. Gắn OrderService vào TableReservation
+                reservation.ServiceId = orderService.ServiceId;
+                _context.TableReservations.Add(reservation);
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Đã đặt lịch thành công!";
+                return RedirectToAction("Index", "Home");
             }
+
+            return View(reservation);
         }
+
+        // Phương thức hiển thị thông tin đơn đặt hàng
+        public async Task<IActionResult> ViewOrder(int customerId)
+        {
+            var reservations = await _context.TableReservations
+                .Include(r => r.Table)
+                .Include(r => r.OrderService)
+                    .ThenInclude(s => s.OrderDishes)
+                        .ThenInclude(od => od.Dish)
+                .Include(r => r.OrderService.Payments)
+                .Where(r => r.CustomerId == customerId)
+                .OrderByDescending(r => r.StartTime)
+                .ToListAsync();
+
+            return View(reservations);
+        }
+
 
         // API method to check availability
         [HttpGet]
@@ -266,55 +171,7 @@ namespace RestaurantWebsite.Controllers
             return View(reservation);
         }
 
-        // Process payment (this is just a placeholder - actual payment processing would be more complex)
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> ProcessPayment(int ReservationId, int ServiceId, decimal Amount, string PaymentMethod)
-        //{
-        //    var reservation = await _context.TableReservations.FindAsync(ReservationId);
-        //    if (reservation == null)
-        //        return NotFound();
 
-        //    var orderService = await _context.OrderServices.FindAsync(ServiceId);
-        //    if (orderService == null)
-        //        return NotFound();
-
-        //    // Create payment record
-        //    var payment = new Payment
-        //    {
-        //        ServiceId = ServiceId,
-        //        Amount = Amount,
-        //        PaymentMethod = PaymentMethod,
-        //        PaymentDate = DateTime.Now,
-        //        Status = "Completed"
-        //    };
-
-        //    _context.Payments.Add(payment);
-
-        //    // Update reservation status
-        //    reservation.Status = ReservationStatus.Confirmed;
-
-        //    await _context.SaveChangesAsync();
-
-        //    // Redirect to a success page
-        //    return RedirectToAction("PaymentSuccess", new { id = ReservationId });
-        //}
-
-        //// Payment success page
-        //public async Task<IActionResult> PaymentSuccess(int id)
-        //{
-        //    var reservation = await _context.TableReservations
-        //        .Include(r => r.Table)
-        //        .Include(r => r.Customer)
-        //        .FirstOrDefaultAsync(r => r.ReservationId == id);
-
-        //    if (reservation == null)
-        //        return NotFound();
-
-        //    return View(reservation);
-        //}
-
-        // Helper method to check table availability
         private async Task<(bool isAvailable, string message)> CheckTableAvailabilityAsync(int tableId, DateTime startTime, DateTime endTime)
         {
             // Check if startTime is before endTime
