@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using RestaurantWebsite.ViewModels;
 
 namespace RestaurantWebsite.Controllers
 {
@@ -98,23 +99,6 @@ namespace RestaurantWebsite.Controllers
             return View(reservation);
         }
 
-        // Phương thức hiển thị thông tin đơn đặt hàng
-        public async Task<IActionResult> ViewOrder(int customerId)
-        {
-            var reservations = await _context.TableReservations
-                .Include(r => r.Table)
-                .Include(r => r.OrderService)
-                    .ThenInclude(s => s.OrderDishes)
-                        .ThenInclude(od => od.Dish)
-                .Include(r => r.OrderService.Payments)
-                .Where(r => r.CustomerId == customerId)
-                .OrderByDescending(r => r.StartTime)
-                .ToListAsync();
-
-            return View(reservations);
-        }
-
-
         // API method to check availability
         [HttpGet]
         public async Task<JsonResult> CheckTableAvailability(int tableId, DateTime startTime, DateTime endTime)
@@ -147,29 +131,6 @@ namespace RestaurantWebsite.Controllers
             return View(reservation);
         }
 
-        // Payment page
-        public async Task<IActionResult> Payment(int id)
-        {
-            var reservation = await _context.TableReservations
-                .Include(r => r.Table)
-                .Include(r => r.Customer)
-                .FirstOrDefaultAsync(r => r.ReservationId == id);
-
-            if (reservation == null)
-                return NotFound();
-
-            // Lấy thông tin các món đã đặt
-            var orderService = await _context.OrderServices
-                .Include(o => o.OrderDishes)
-                .ThenInclude(od => od.Dish)
-                .FirstOrDefaultAsync(o => o.TableId == reservation.TableId &&
-                                         o.CustomerId == reservation.CustomerId &&
-                                         o.StartTime == reservation.StartTime);
-
-            ViewBag.OrderService = orderService;
-
-            return View(reservation);
-        }
 
 
         private async Task<(bool isAvailable, string message)> CheckTableAvailabilityAsync(int tableId, DateTime startTime, DateTime endTime)
