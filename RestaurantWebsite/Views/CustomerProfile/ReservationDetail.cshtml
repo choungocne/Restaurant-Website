@@ -1,0 +1,224 @@
+﻿@model RestaurantWebsite.ViewModels.CustomerReservationViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết đặt bàn";
+    Layout = null;
+}
+
+<style>
+    .card-container {
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    }
+
+    .card-container:hover {
+    transform: translateY(-2px);
+    }
+
+    .card-header-red {
+    background-color: #dc3545;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 10px 10px 0 0;
+    }
+
+    .btn-red {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 16px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-red:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    transform: translateY(-1px);
+    }
+
+    .btn-gray {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 16px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-gray:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    transform: translateY(-1px);
+    }
+
+    .text-gray {
+    color: #6c757d;
+    }
+
+    .table {
+    background-color: white;
+    border-collapse: separate;
+    border-spacing: 0;
+    }
+
+    .table thead th {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-weight: 600;
+    padding: 12px;
+    }
+
+    .table tbody tr {
+    transition: background-color 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+    background-color: #f1f3f5;
+    }
+
+    .badge {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    transition: transform 0.2s ease;
+    }
+
+    .badge:hover {
+    transform: scale(1.05);
+    }
+
+    h1 {
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #dc3545;
+    }
+
+    .breadcrumb {
+    background-color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .breadcrumb-item a {
+    color: #6c757d;
+    text-decoration: none;
+    }
+
+    .breadcrumb-item a:hover {
+    color: #dc3545;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+               
+            </nav>
+            <h1>Chi tiết đặt bàn #@Model.Reservation.ReservationId</h1>
+        </div>
+    </div>
+    <center>
+    <div class="card-container mb-4">
+        <div class="card-header card-header-red d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">
+                <i class="bi bi-info-circle me-2"></i>
+                Thông tin đặt bàn
+            </h2>
+           
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label text-gray">Khách hàng</label>
+                        <p class="fw-bold">@Model.Reservation.Customer.CustomerName</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-gray">Bàn đặt</label>
+                        <p class="fw-bold">@Model.Reservation.Table.TableName</p>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label text-gray">Thời gian đặt bàn</label>
+                        <p class="fw-bold">@Model.Reservation.StartTime.ToString("dd/MM/yyyy HH:mm") - @Model.Reservation.EndTime.ToString("HH:mm")</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-gray">Thời gian tạo đơn</label>
+                        <p class="fw-bold">@Model.Reservation.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-gray">Mã dịch vụ</label>
+                        <p class="fw-bold">@(Model.OrderService?.ServiceId.ToString() ?? "Không có")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <div class="card-container mb-4">
+        <div class="card-header card-header-red">
+            <h2 class="mb-0">
+                <i class="bi bi-receipt me-2"></i>
+                Chi tiết đơn hàng
+            </h2>
+        </div>
+        <div class="card-body">
+            @if (Model.OrderDishes.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%"><i class="bi bi-list-ul me-1"></i> Món ăn</th>
+                                <th class="text-center"><i class="bi bi-hash me-1"></i> Số lượng</th>
+                                <th class="text-end"><i class="bi bi-currency-dollar me-1"></i> Đơn giá</th>
+                                <th class="text-end"><i class="bi bi-wallet me-1"></i> Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dish in Model.OrderDishes)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <strong>@dish.DishName</strong>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(dish.Note))
+                                        {
+                                            <small class="text-gray d-block mt-1">Ghi chú: @dish.Note</small>
+                                        }
+                                    </td>
+                                    <td class="text-center">@dish.Quantity</td>
+                                    <td class="text-end">@string.Format("{0:N0}", dish.UnitPrice) đ</td>
+                                    <td class="text-end">@string.Format("{0:N0}", dish.SubTotal) đ</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="3" class="text-end">Tổng tiền:</th>
+                                <th class="text-end">@string.Format("{0:N0}", Model.TotalAmount) đ</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning rounded-3 shadow-sm">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Không có món ăn nào được đặt trong đơn hàng này.
+                </div>
+            }
+        </div>
+    </div>
+
+	</center>

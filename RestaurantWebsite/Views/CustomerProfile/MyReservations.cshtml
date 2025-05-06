@@ -1,0 +1,205 @@
+﻿@model RestaurantWebsite.ViewModels.CustomerReservationsListViewModel
+
+@{
+    ViewData["Title"] = "Lịch sử đặt bàn";
+    Layout = null;
+}
+
+<style>
+    .table-container {
+        background-color: white;
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .table-container:hover {
+            transform: translateY(-2px);
+        }
+
+    .table-header-red {
+        background-color: #dc3545;
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+        .table-header-red th {
+            padding: 15px;
+        }
+
+    .table tbody tr {
+        transition: background-color 0.3s ease;
+    }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+    .btn-red {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+        border-radius: 5px;
+        padding: 6px 12px;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+        .btn-red:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: translateY(-1px);
+        }
+
+    .btn-gray {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+        border-radius: 5px;
+        padding: 6px 12px;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+        .btn-gray:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+            transform: translateY(-1px);
+        }
+
+    .text-gray {
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
+
+    .table {
+        background-color: white;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        transition: transform 0.2s ease;
+    }
+
+        .badge:hover {
+            transform: scale(1.05);
+        }
+
+    h1 {
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 style="color: #dc3545;">Lịch sử đặt bàn của @Model.CustomerName</h1>
+            <p class="text-gray">Xem lại các đơn đặt bàn của bạn với chi tiết đầy đủ</p>
+        </div>
+    </div>
+   
+    @if (!Model.Reservations.Any())
+    {
+        <div class="alert alert-danger rounded-3 shadow-sm">
+            <i class="bi bi-info-circle me-2"></i>
+            Bạn chưa có đơn đặt bàn nào. <a asp-controller="Reservation" asp-action="Create" class="alert-link text-white">Đặt bàn ngay</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <center>
+                        <table class="table table-hover">
+
+							<thead class="table-header-red">
+								
+                                <tr>
+                                    <th scope="col"><i class="bi bi-hash me-1"></i> Mã đặt bàn</th>
+                                    <th scope="col"><i class="bi bi-table me-1"></i> Bàn</th>
+                                    <th scope="col"><i class="bi bi-calendar-date me-1"></i> Ngày</th>
+                                    <th scope="col"><i class="bi bi-tag me-1"></i> Trạng thái</th>
+                                    <th scope="col"><i class="bi bi-currency-dollar me-1"></i> Tổng tiền</th>
+                                    <th scope="col"><i class="bi bi-gear me-1"></i> Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Reservations)
+                                {
+                                    <tr>
+                                        <td>#@item.Reservation.ReservationId</td>
+                                        <td>@item.Reservation.Table.TableName</td>
+                                        <td>@item.Reservation.StartTime.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <span class="badge @GetStatusBadgeClass(item.StatusDisplay) rounded-pill">
+                                                @item.StatusDisplay
+                                            </span>
+                                        </td>
+                                        <td>@string.Format("{0:N0}", item.TotalAmount) đ</td>
+                                        <td>
+                                            <a asp-action="ReservationDetail" asp-route-reservationId="@item.Reservation.ReservationId" class="btn btn-sm btn-gray">
+                                                <i class="bi bi-eye me-1"></i> Chi tiết
+                                            </a>
+                                            @if (item.Reservation.Status == RestaurantWebsite.Models.ReservationStatus.Pending)
+                                            {
+                                                <button class="btn btn-sm btn-red ms-1" onclick="confirmCancel(@item.Reservation.ReservationId)">
+                                                    <i class="bi bi-x-circle me-1"></i> Hủy
+                                                </button>
+                                            }
+                                            <a asp-action=""  class="btn btn-sm btn-gray">
+                                                <i class="bi bi-eye me-1"></i> Thanh toán
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+							</table>
+						</center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@functions {
+    public string GetStatusBadgeClass(string status)
+    {
+        switch (status)
+        {
+            case "Đã hủy":
+                return "bg-danger";
+            case "Chờ xác nhận":
+                return "bg-warning text-dark";
+            case "Đã xác nhận - Chờ đến ngày":
+                return "bg-info text-dark";
+            case "Đang phục vụ":
+                return "bg-primary";
+            case "Chờ thanh toán":
+                return "bg-warning text-dark";
+            case "Hoàn thành":
+                return "bg-success";
+            default:
+                return "bg-secondary";
+        }
+    }
+}
+
+@section Scripts {
+    <script>
+        function confirmCancel(reservationId) {
+            if (confirm("Bạn có chắc chắn muốn hủy đặt bàn này?")) {
+                window.location.href = '@Url.Action("CancelReservation")/' + reservationId;
+            }
+        }
+    </script>
+}
