@@ -18,8 +18,13 @@ Không chỉ dừng lại ở một giao diện bắt mắt, website còn tích 
 📍 Liên hệ dễ dàng: Thông tin liên lạc rõ ràng, hỗ trợ kết nối nhanh chóng giữa khách hàng và nhà hàng.
 🚀 Hướng dẫn khởi chạy
 Clone dự án:
+
 git clone https://github.com/choungocne/Restaurant-Website.git
-Mở Visual Studio và tải file RestaurantWebsite.sln
-Dùng SQL Server để chạy script Restaurant.sql tạo CSDL
-Cập nhật chuỗi kết nối DB trong Web.config
-Nhấn F5 để chạy bằng IIS Express hoặc chọn host phù hợp
+
+1. Mở Visual Studio và tải file RestaurantWebsite.sln
+2. 
+3. Dùng SQL Server để chạy script Restaurant.sql tạo CSDL
+4. 
+5. Cập nhật chuỗi kết nối DB trong Web.config
+6. 
+7. Nhấn F5 để chạy bằng IIS Express hoặc chọn host phù hợp
