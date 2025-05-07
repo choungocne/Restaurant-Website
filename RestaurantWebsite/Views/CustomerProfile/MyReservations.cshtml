@@ -5,12 +5,22 @@
     Layout = null;
 }
 
+<!-- Include Bootstrap 5, Font Awesome, and DataTables CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
 <style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Arial', sans-serif;
+    }
+
     .table-container {
         background-color: white;
-        border-radius: 10px;
+        border-radius: 15px;
         border: 1px solid #dee2e6;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         padding: 20px;
         transition: transform 0.2s ease-in-out;
     }
@@ -19,16 +29,17 @@
             transform: translateY(-2px);
         }
 
-    .table-header-red {
-        background-color: #dc3545;
+    .table-header {
+        background: linear-gradient(90deg, #dc3545, #ff6b6b);
         color: white;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
-        .table-header-red th {
+        .table-header th {
             padding: 15px;
+            text-align: center;
         }
 
     .table tbody tr {
@@ -36,16 +47,25 @@
     }
 
         .table tbody tr:hover {
-            background-color: #f8f9fa;
+            background-color: #f1f3f5;
         }
+
+    .table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .btn-custom {
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
 
     .btn-red {
         background-color: #dc3545;
         border-color: #dc3545;
         color: white;
-        border-radius: 5px;
-        padding: 6px 12px;
-        transition: background-color 0.2s ease, transform 0.2s ease;
     }
 
         .btn-red:hover {
@@ -58,9 +78,6 @@
         background-color: #6c757d;
         border-color: #6c757d;
         color: white;
-        border-radius: 5px;
-        padding: 6px 12px;
-        transition: background-color 0.2s ease, transform 0.2s ease;
     }
 
         .btn-gray:hover {
@@ -69,20 +86,26 @@
             transform: translateY(-1px);
         }
 
+    .btn-primary {
+        background: linear-gradient(90deg, #007bff, #00d4ff);
+        border-color: #007bff;
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #0056b3, #0096cc);
+            transform: translateY(-1px);
+        }
+
     .text-gray {
         color: #6c757d;
         font-size: 1.1rem;
     }
 
-    .table {
-        background-color: white;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
     .badge {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         padding: 6px 12px;
+        border-radius: 12px;
         transition: transform 0.2s ease;
     }
 
@@ -93,22 +116,54 @@
     h1 {
         font-weight: 700;
         letter-spacing: 1px;
+        color: #dc3545;
+    }
+
+    .alert-danger {
+        border-radius: 10px;
+        background: linear-gradient(90deg, #dc3545, #ff6b6b);
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert-link {
+        color: #fff;
+        text-decoration: underline;
+    }
+
+    @@media (max-width: 576px) {
+        .table-header th, .table td
+
+    {
+        font-size: 0.85rem;
+    }
+
+    .btn-custom {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+    }
+
     }
 </style>
 
 <div class="container my-5">
     <div class="row mb-4">
         <div class="col">
-            <h1 style="color: #dc3545;">Lịch sử đặt bàn của @Model.CustomerName</h1>
+            <h1>Lịch sử đặt bàn của @(Model.CustomerName ?? "Khách hàng")</h1>
             <p class="text-gray">Xem lại các đơn đặt bàn của bạn với chi tiết đầy đủ</p>
         </div>
     </div>
-   
+
     @if (!Model.Reservations.Any())
     {
         <div class="alert alert-danger rounded-3 shadow-sm">
-            <i class="bi bi-info-circle me-2"></i>
-            Bạn chưa có đơn đặt bàn nào. <a asp-controller="Reservation" asp-action="Create" class="alert-link text-white">Đặt bàn ngay</a>
+            <i class="fas fa-info-circle me-2"></i>
+            Bạn chưa có đơn đặt bàn nào.
+            <a asp-controller="Reservation" asp-action="Create" class="alert-link">Đặt bàn ngay</a>
         </div>
     }
     else
@@ -117,53 +172,51 @@
             <div class="col-12">
                 <div class="table-container">
                     <div class="table-responsive">
-                        <center>
-                        <table class="table table-hover">
-
-							<thead class="table-header-red">
-								
+                        <table class="table table-hover" id="reservationsTable">
+                            <thead class="table-header">
                                 <tr>
-                                    <th scope="col"><i class="bi bi-hash me-1"></i> Mã đặt bàn</th>
-                                    <th scope="col"><i class="bi bi-table me-1"></i> Bàn</th>
-                                    <th scope="col"><i class="bi bi-calendar-date me-1"></i> Ngày</th>
-                                    <th scope="col"><i class="bi bi-tag me-1"></i> Trạng thái</th>
-                                    <th scope="col"><i class="bi bi-currency-dollar me-1"></i> Tổng tiền</th>
-                                    <th scope="col"><i class="bi bi-gear me-1"></i> Hành động</th>
+                                    <th scope="col"><i class="fas fa-hashtag me-1"></i> Mã đặt bàn</th>
+                                    <th scope="col"><i class="fas fa-chair me-1"></i> Bàn</th>
+                                    <th scope="col"><i class="fas fa-calendar-alt me-1"></i> Ngày</th>
+                                    <th scope="col"><i class="fas fa-tag me-1"></i> Trạng thái</th>
+                                    <th scope="col"><i class="fas fa-money-bill-wave me-1"></i> Tổng tiền</th>
+                                    <th scope="col"><i class="fas fa-cog me-1"></i> Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in Model.Reservations)
                                 {
                                     <tr>
-                                        <td>#@item.Reservation.ReservationId</td>
-                                        <td>@item.Reservation.Table.TableName</td>
-                                        <td>@item.Reservation.StartTime.ToString("dd/MM/yyyy")</td>
+                                        <td>@(item.Reservation?.ReservationId)</td>
+                                        <td>@(item.Reservation?.Table?.TableName ?? "N/A")</td>
+                                        <td>@(item.Reservation?.StartTime.ToString("dd/MM/yyyy") ?? "N/A")</td>
                                         <td>
                                             <span class="badge @GetStatusBadgeClass(item.StatusDisplay) rounded-pill">
-                                                @item.StatusDisplay
+                                                @(item.StatusDisplay ?? "Không xác định")
                                             </span>
                                         </td>
-                                        <td>@string.Format("{0:N0}", item.TotalAmount) đ</td>
+                                        <td>@(item.TotalAmount != null ? string.Format("{0:N0}", item.TotalAmount) : "0") đ</td>
                                         <td>
-                                            <a asp-action="ReservationDetail" asp-route-reservationId="@item.Reservation.ReservationId" class="btn btn-sm btn-gray">
-                                                <i class="bi bi-eye me-1"></i> Chi tiết
+                                            <a asp-action="ReservationDetail" asp-route-reservationId="@item.Reservation.ReservationId" class="btn btn-sm btn-gray btn-custom me-1">
+                                                <i class="fas fa-eye me-1"></i> Chi tiết
                                             </a>
-                                            @if (item.Reservation.Status == RestaurantWebsite.Models.ReservationStatus.Pending)
+                                            @if (item.Reservation?.Status == RestaurantWebsite.Models.ReservationStatus.Pending)
                                             {
-                                                <button class="btn btn-sm btn-red ms-1" onclick="confirmCancel(@item.Reservation.ReservationId)">
-                                                    <i class="bi bi-x-circle me-1"></i> Hủy
+                                                <button class="btn btn-sm btn-red btn-custom me-1" onclick="confirmCancel(@item.Reservation.ReservationId)">
+                                                    <i class="fas fa-times-circle me-1"></i> Hủy
                                                 </button>
                                             }
-                                            <a asp-action=""  class="btn btn-sm btn-gray">
-                                                <i class="bi bi-eye me-1"></i> Thanh toán
+                                            <a asp-controller="Payment" asp-action="Process" asp-route-reservationId="@item.Reservation.ReservationId" class="btn btn-sm btn-gray btn-custom me-1">
+                                                <i class="fas fa-credit-card me-1"></i> Thanh toán
+                                            </a>
+                                            <a asp-controller="Feedback" asp-action="Create" asp-route-reservationId="@item.Reservation.ReservationId" class="btn btn-sm btn-primary btn-custom">
+                                                <i class="fas fa-star me-1"></i> Đánh giá
                                             </a>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
-
-							</table>
-						</center>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -171,35 +224,53 @@
     }
 </div>
 
+<!-- Include JS for Bootstrap, jQuery, and DataTables -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#reservationsTable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json' // Vietnamese localization
+            },
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50],
+            order: [[2, 'desc']], // Sort by Ngày (StartTime) descending
+            columnDefs: [
+                { orderable: false, targets: 5 } // Disable sorting on Hành động column
+            ]
+        });
+    });
+
+    function confirmCancel(reservationId) {
+        if (confirm("Bạn có chắc chắn muốn hủy đặt bàn này? Hành động này không thể hoàn tác.")) {
+            window.location.href = '/Reservation/CancelReservation/' + reservationId;
+        }
+    }
+</script>
+
 @functions {
     public string GetStatusBadgeClass(string status)
     {
-        switch (status)
+        switch (status?.ToLower())
         {
-            case "Đã hủy":
+            case "đã hủy":
                 return "bg-danger";
-            case "Chờ xác nhận":
+            case "chờ xác nhận":
                 return "bg-warning text-dark";
-            case "Đã xác nhận - Chờ đến ngày":
+            case "đã xác nhận - chờ đến ngày":
                 return "bg-info text-dark";
-            case "Đang phục vụ":
+            case "đang phục vụ":
                 return "bg-primary";
-            case "Chờ thanh toán":
+            case "chờ thanh toán":
                 return "bg-warning text-dark";
-            case "Hoàn thành":
+            case "hoàn thành":
                 return "bg-success";
             default:
                 return "bg-secondary";
         }
     }
-}
-
-@section Scripts {
-    <script>
-        function confirmCancel(reservationId) {
-            if (confirm("Bạn có chắc chắn muốn hủy đặt bàn này?")) {
-                window.location.href = '@Url.Action("CancelReservation")/' + reservationId;
-            }
-        }
-    </script>
 }

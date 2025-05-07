@@ -23,11 +23,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Auth/Login";
-        options.LogoutPath = "/Auth/Logout";
         options.AccessDeniedPath = "/Auth/AccessDenied";
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.Cookie.Name = "RestaurantAuth"; // Đặt tên cụ thể cho cookie
+        options.ExpireTimeSpan = TimeSpan.FromDays(7); // Thời gian sống của cookie
     });
 
 var app = builder.Build();
@@ -44,6 +42,20 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthorization();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<RestaurantContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Có lỗi xảy ra khi khởi tạo cơ sở dữ liệu.");
+    }
+}
 
 app.MapControllerRoute(
     name: "default",

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantWebsite.Models;
 
@@ -14,4 +15,15 @@ public partial class Feedback
     public DateTime? CreatedAt { get; set; }
 
     public virtual Customer? Customer { get; set; }
-}
+
+    [Required]
+    public int ReservationId { get; set; }
+
+    [Required]
+    [Range(1, 5)]
+    public int Rating { get; set; }
+    public virtual TableReservation? Reservation { get; set; }
+    }
+
+
+

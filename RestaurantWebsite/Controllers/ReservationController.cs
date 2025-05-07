@@ -210,7 +210,24 @@ namespace RestaurantWebsite.Controllers
                 }
             }, null, TimeSpan.FromMinutes(30), Timeout.InfiniteTimeSpan);
         }
+        public async Task<IActionResult> CompleteReservation(int id)
+        {
+            var reservation = await _context.TableReservations.FindAsync(id);
+            if (reservation == null)
+                return NotFound();
 
+            // Only allow completing confirmed reservations
+            if (reservation.Status != ReservationStatus.Confirmed)
+            {
+                TempData["ErrorMessage"] = "Chỉ có thể hoàn thành các đặt bàn đã xác nhận.";
+                return RedirectToAction("Reservations", "Admin");
+            }
+            reservation.Status = ReservationStatus.Completed;
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Đã hoàn thành đặt bàn.";
+            return RedirectToAction("Reservations", "Admin");
+        }
         // Remaining controller methods...
     }
 }

@@ -19,9 +19,8 @@
                         <h4>@Html.DisplayFor(modelItem => item.DishName)</h4>
                         <p class="ingredients">
                         </p>
-                        <p class="price">
-                            $@Html.DisplayFor(modelItem => item.UnitPrice)
-                        </p>
+                        <p class="text-red-600">@item.UnitPrice.ToString("N0") VNĐ</p>
+
                        
                     </div>
                 }

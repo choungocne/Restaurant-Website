@@ -48,24 +48,20 @@ namespace RestaurantWebsite.Controllers
         // GET: CustomerProfile/Edit
         public async Task<IActionResult> Edit()
         {
-            // Get the current user's username
             var username = User.Identity.Name;
 
-            // Find the user account
             var userAccount = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
             if (userAccount == null)
             {
                 return NotFound();
             }
 
-            // Find the customer associated with this user account
             var customer = _context.Customers.FirstOrDefault(c => c.CustomerId == userAccount.CustomerId);
             if (customer == null)
             {
                 return NotFound();
             }
 
-            // Send both customer and user account to the view
             ViewBag.UserAccount = userAccount;
             return View(customer);
         }
@@ -130,22 +126,18 @@ namespace RestaurantWebsite.Controllers
                     _context.Update(existingCustomer);
                     await _context.SaveChangesAsync();
 
-                    // Redirect to the profile page after successful update
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    // Log the error
                     ModelState.AddModelError(string.Empty, "An error occurred: " + ex.Message);
 
-                    // If there's an error, return to the edit form
-                    // We need to send the user account data again
+                   
                     ViewBag.UserAccount = _context.UserAccounts.FirstOrDefault(u => u.CustomerId == id);
                     return View(customer);
                 }
             }
 
-            // If model state is invalid, repopulate the ViewBag and return to the view
             ViewBag.UserAccount = _context.UserAccounts.FirstOrDefault(u => u.CustomerId == id);
             return View(customer);
         }

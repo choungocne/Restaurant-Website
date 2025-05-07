@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace RestaurantWebsite.Models;
 
 public partial class RestaurantContext : DbContext
@@ -121,6 +122,7 @@ public partial class RestaurantContext : DbContext
 
             entity.ToTable("Feedback");
 
+
             entity.Property(e => e.FeedbackId).HasColumnName("FeedbackID");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -130,6 +132,10 @@ public partial class RestaurantContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.Feedbacks)
                 .HasForeignKey(d => d.CustomerId)
                 .HasConstraintName("FK__Feedback__Custom__628FA481");
+            entity.HasOne(e => e.Reservation)
+            .WithMany()
+            .HasForeignKey(e => e.ReservationId)
+            .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<OrderDish>(entity =>
@@ -281,6 +287,8 @@ public partial class RestaurantContext : DbContext
 
         });
         OnModelCreatingPartial(modelBuilder);
+        
+
     }
 
     internal IEnumerable<DiningTable> ToList()
