@@ -11,6 +11,7 @@ using RestaurantWebsite.Models;
 using RestaurantWebsite.ViewModels;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RestaurantWebsite.Controllers
 {
@@ -53,6 +54,16 @@ namespace RestaurantWebsite.Controllers
             }
 
             await SignInUser(user);
+
+            // Redirect based on user role
+            if (user.Role == "Admin" || user.Role == "SuperAdmin")
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+            else if (user.Role == "Employee")
+            {
+                return RedirectToAction("Index", "Employee");
+            }
             return RedirectToAction("Index", "Home");
         }
 
