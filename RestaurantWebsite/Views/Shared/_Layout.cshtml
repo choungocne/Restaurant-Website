@@ -85,7 +85,7 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             @if (User.IsInRole("Admin"))
                             {
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Dashboard">Quản trị viên</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index">Quản trị viên</a></li>
                                 <li><hr class="dropdown-divider"></li>
                             }
                             @if (User.IsInRole("Employee"))
@@ -94,7 +94,7 @@
                                 <li><hr class="dropdown-divider"></li>
                             }
                             <li><a class="dropdown-item" asp-area="" asp-controller="CustomerProfile" asp-action="Index">Hồ sơ của tôi</a></li>
-                            <li><a class="dropdown-item" asp-controller="Reservation" asp-action="ViewOrder" >Đơn hàng của tôi</a></li>
+                            <li><a class="dropdown-item" asp-controller="CustomerProfile" asp-action="MyReservations">Đơn hàng của tôi</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form class="form-inline" asp-area="" asp-controller="Auth" asp-action="Logout" method="post">
