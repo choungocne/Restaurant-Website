@@ -1,0 +1,110 @@
+﻿@model RestaurantWebsite.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng ký";
+    Layout = null;
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>
+        Register
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+</head>
+<body class="bg-white min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-6xl w-full flex flex-col md:flex-row items-center md:items-start gap-12">
+        <div class="flex-shrink-0 w-full md:w-1/2 flex justify-center md:justify-start">
+            <img alt="Illustration of a girl standing next to a large smartphone with a keyhole and a key in her hand, surrounded by minimal plants and abstract shapes" class="max-w-full h-auto" height="400" src="https://storage.googleapis.com/a1aa/image/742827d7-58c2-4ff2-42a3-64fc2ad0fcee.jpg" width="400" />
+        </div>
+        <div class="bg-white shadow-md rounded-lg max-w-4xl w-full">
+            <div class="card-body p-8">
+                <form asp-action="CreateSuperAdmin" method="post" class="needs-validation" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert" style="display: none;"></div>
+
+                    <div class="mb-4">
+                        <label asp-for="Username" class="form-label fw-bold">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input asp-for="Username" class="form-control form-control-lg" placeholder="Enter username" required />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Email" class="form-label fw-bold">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input asp-for="Email" class="form-control form-control-lg" placeholder="Enter email" required />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label fw-bold">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input asp-for="Password" class="form-control form-control-lg" type="password" placeholder="Enter password" required />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ConfirmPassword" class="form-label fw-bold">Confirm Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input asp-for="ConfirmPassword" class="form-control form-control-lg" type="password" placeholder="Confirm password" required />
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="FullName" class="form-label fw-bold">Full Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                            <input asp-for="FullName" class="form-control form-control-lg" placeholder="Enter full name" required />
+                        </div>
+                        <span asp-validation-for="FullName" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+@*                     <div class="mb-4">
+                        <label asp-for="BirthDate" class="form-label fw-bold">Birth Date</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                            <input asp-for="BirthDate" class="form-control form-control-lg" type="date" required />
+                        </div>
+                        <span asp-validation-for="BirthDate" class="text-danger mt-1 d-block"></span>
+                    </div>
+ *@
+                    <div class="mb-4">
+                        <label asp-for="PhoneNumber" class="form-label fw-bold">Phone Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            <input asp-for="PhoneNumber" class="form-control form-control-lg" placeholder="Enter phone number" required />
+                        </div>
+                        <span asp-validation-for="PhoneNumber" class="text-danger mt-1 d-block"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold">Create Super Admin</button>
+                        <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center border-t border-gray-200 p-4 text-gray-700">
+                <p class="mb-0">
+                    Bạn đã có tài khoản? <a asp-action="Login" class="text-blue-600 hover:underline">Đăng nhập ngay</a>
+                </p>
+            </div>
+        </div>
+</body>
+</html>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
