@@ -1,0 +1,154 @@
+﻿@model RestaurantWebsite.ViewModels.FeedbackViewModel
+
+@{
+    ViewData["Title"] = "Đánh giá dịch vụ";
+    Layout = null;
+}
+
+<!-- Include Bootstrap 5 CSS and Font Awesome for star icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .rating-stars {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .rating-stars input {
+        display: none;
+    }
+
+    .rating-stars label {
+        cursor: pointer;
+        font-size: 30px; /* Larger stars for better UX */
+        color: #e4e5e9; /* Light gray for unselected stars */
+        transition: color 0.2s ease-in-out;
+    }
+
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label,
+    .rating-stars input:checked ~ label {
+        color: #ffd700; /* Gold for selected/hovered stars */
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+        background: linear-gradient(90deg, #007bff, #00d4ff); /* Gradient background */
+    }
+
+    .form-control, .form-control:focus {
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+        box-shadow: none;
+    }
+
+    .btn-primary {
+        border-radius: 10px;
+        padding: 10px 30px;
+        background: linear-gradient(90deg, #007bff, #00d4ff);
+        border: none;
+        transition: transform 0.2s;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        border-radius: 10px;
+        padding: 10px 30px;
+    }
+
+    .alert-info {
+        border-radius: 10px;
+        background-color: #e7f1ff;
+        color: #0d6efd;
+    }
+
+    .text-danger {
+        font-size: 0.9rem;
+    }
+
+    @@media (max-width: 576px) {
+        .rating-stars label {
+            font-size: 25px;
+        }
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Đánh giá dịch vụ</h3>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Reservation Info -->
+                    <div class="alert alert-info mb-4">
+                        <p class="mb-1"><strong>Thời gian đặt bàn:</strong> @Model.ReservationDate.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p class="mb-0"><strong>Bàn:</strong> @Model.TableName</p>
+                    </div>
+
+                    <!-- Feedback Form -->
+                    <form asp-action="Create" method="post">
+                        <!-- Hidden Fields -->
+                        <input type="hidden" asp-for="ReservationId" />
+                        <input type="hidden" asp-for="CustomerId" />
+                        <input type="hidden" asp-for="ReservationDate" />
+                        <input type="hidden" asp-for="TableName" />
+
+                        <!-- Validation Summary -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <!-- Rating Stars -->
+                        <div class="form-group mb-4 text-center">
+                            <label asp-for="Rating" class="form-label fw-bold">Đánh giá</label>
+                            <div class="rating-stars">
+                                @for (var i = 5; i >= 1; i--) 
+                                {
+                                    <input type="radio" name="Rating" id="star@(i)" value="@i" required asp-for="Rating" />
+                                    <label for="star@(i)"><i class="fa fa-star"></i></label>
+                                }
+                            </div>
+                            <span asp-validation-for="Rating" class="text-danger"></span>
+                        </div>
+
+                        <!-- Feedback Content -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Content" class="form-label fw-bold">Nội dung đánh giá</label>
+                            <textarea asp-for="Content" class="form-control" rows="5" placeholder="Hãy chia sẻ trải nghiệm của bạn tại nhà hàng chúng tôi"></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary me-2">Gửi đánh giá</button>
+                            <a asp-controller="CustomerProfile" asp-action="MyReservations" class="btn btn-secondary">Quay lại</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap 5 JS and Validation Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
