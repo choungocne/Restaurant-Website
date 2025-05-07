@@ -22,9 +22,9 @@ Clone dự án:
 git clone https://github.com/choungocne/Restaurant-Website.git
 
 1. Mở Visual Studio và tải file RestaurantWebsite.sln
-2. 
-3. Dùng SQL Server để chạy script Restaurant.sql tạo CSDL
-4. 
-5. Cập nhật chuỗi kết nối DB trong Web.config
-6. 
-7. Nhấn F5 để chạy bằng IIS Express hoặc chọn host phù hợp
+   
+2. Dùng SQL Server để chạy script Restaurant.sql tạo CSDL
+   
+3. Cập nhật chuỗi kết nối DB trong Web.config
+   
+4. Nhấn F5 để chạy bằng IIS Express hoặc chọn host phù hợp
