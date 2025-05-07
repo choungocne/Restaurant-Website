@@ -1,0 +1,162 @@
+﻿@model List<RestaurantWebsite.Models.Dish>
+@{
+    Layout = "_AdminLayout";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách món ăn</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .add-new {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+            .add-new:hover {
+                background-color: #5a6268;
+            }
+
+        .table-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        thead {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #d3d3d3;
+        }
+
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        tbody tr {
+            transition: background-color 0.3s;
+        }
+
+            tbody tr:hover {
+                background-color: #d3d3d3;
+            }
+
+        td {
+            color: #555;
+        }
+
+        .actions a {
+            color: #6c757d;
+            text-decoration: none;
+            padding: 8px 12px;
+            border: 1px solid #6c757d;
+            border-radius: 5px;
+            transition: all 0.3s;
+            margin-right: 5px;
+        }
+
+            .actions a:hover {
+                background-color: #6c757d;
+                color: #fff;
+            }
+
+            .actions a.delete {
+                border-color: #dc3545;
+                color: #dc3545;
+            }
+
+                .actions a.delete:hover {
+                    background-color: #dc3545;
+                    color: #fff;
+                }
+        @@media (max-width: 768px) {
+            table
+
+        {
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 10px;
+        }
+
+        .actions a {
+            padding: 6px 8px;
+            font-size: 12px;
+        }
+
+        .add-new {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <h2>Danh sách món ăn</h2>
+    <a asp-action="CreateDish" class="add-new">+ Thêm món ăn mới</a>
+
+    <div class="container">
+        <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
+            <div class="tab-pane fade active show" id="menu-starters">
+
+                <div class="row gy-5">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-lg-4 menu-item">
+                            <img src="/img/menu/@item.Img" class="card-img-top" alt="@item.DishName" style="object-fit: cover;height: 400px;" />
+                            <h4>@Html.DisplayFor(modelItem => item.DishName)</h4>
+                            <p class="ingredients">
+                            </p>
+                            <p class="text-red-600">@item.UnitPrice.ToString("N0") VNĐ</p>
+                            <a asp-action="EditDish" asp-route-id="@item.DishId">Sửa</a>
+                            <a asp-action="DeleteDish" asp-route-id="@item.DishId" class="delete">Xóa</a>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+ 
+</body>
+</html>

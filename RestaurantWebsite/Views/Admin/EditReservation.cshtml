@@ -1,0 +1,163 @@
+﻿@model RestaurantWebsite.Models.TableReservation
+@{
+    Layout = "_AdminLayout";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa đặt bàn</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .card-body {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        thead {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #d3d3d3;
+        }
+
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        td {
+            color: #555;
+        }
+
+        select, input[type="datetime-local"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d3d3d3;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+            select:focus, input:focus {
+                outline: none;
+                border-color: #6c757d;
+                box-shadow: 0 0 5px rgba(108, 117, 125, 0.3);
+            }
+
+        button[type="submit"] {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            button[type="submit"]:hover {
+                background-color: #5a6268;
+            }
+        @@media (max-width: 768px) {
+            th, td
+
+        {
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        select, input[type="datetime-local"], input[type="text"] {
+            font-size: 12px;
+        }
+
+        button[type="submit"] {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <h2>Chỉnh sửa đặt bàn</h2>
+    <div class="card-body">
+        <div class="table-container">
+            <form asp-action="EditReservation" method="post">
+                <input type="hidden" asp-for="ReservationId" />
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Số bàn</th>
+                            <th>Mã dịch vụ</th>
+                            <th>Thời gian bắt đầu</th>
+                            <th>Thời gian kết thúc</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select asp-for="TableId" asp-items="ViewBag.Tables">
+                                    <option value="">Chọn bàn</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input asp-for="ServiceId" placeholder="Nhập mã dịch vụ" />
+                            </td>
+                            <td>
+                                <input asp-for="StartTime" type="datetime-local" />
+                            </td>
+                            <td>
+                                <input asp-for="EndTime" type="datetime-local" />
+                            </td>
+                            <td>
+                                <select asp-for="Status" asp-items="ViewBag.Statuses">
+                                    <option value="">Chọn trạng thái</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit">Lưu</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

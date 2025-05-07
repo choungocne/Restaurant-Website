@@ -1,0 +1,164 @@
+﻿@model RestaurantWebsite.Models.Feedback
+
+@{
+    ViewData["Title"] = "Chi tiết đánh giá";
+    Layout = "_AdminLayout";
+}
+
+<!-- Include Bootstrap 5 and Font Awesome CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+        background: linear-gradient(90deg, #007bff, #00d4ff);
+        color: white;
+    }
+
+    .form-group label {
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .form-group p {
+        margin-bottom: 0;
+        font-size: 1rem;
+        color: #555;
+    }
+
+    .star-rating .fas.fa-star {
+        color: #ffd700; /* Gold for filled stars */
+    }
+
+    .star-rating .far.fa-star {
+        color: #e4e5e9; /* Gray for empty stars */
+    }
+
+    .content-box {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        white-space: pre-wrap; /* Preserve line breaks and wrap text */
+        min-height: 100px;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .btn-primary, .btn-danger {
+        border-radius: 10px;
+        padding: 10px 20px;
+        transition: transform 0.2s;
+    }
+
+    .btn-primary {
+        background: linear-gradient(90deg, #007bff, #00d4ff);
+        border: none;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+    }
+
+        .btn-primary:hover, .btn-danger:hover {
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 576px) {
+        .form-group label, .form-group p
+
+    {
+        font-size: 0.9rem;
+    }
+
+    .content-box {
+        font-size: 0.9rem;
+    }
+
+    .btn-primary, .btn-danger {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+
+    }
+</style>
+
+<div class="container-fluid mt-4">
+    <h1 class="mb-4">Chi tiết đánh giá</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-comment me-2"></i>
+            Đánh giá #@Model.FeedbackId
+        </div>
+        <div class="card-body p-4">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Khách hàng:</label>
+                        <p>@(Model.Customer?.CustomerName ?? "N/A")</p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Đánh giá:</label>
+                        <p class="star-rating">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= Model.Rating)
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-star"></i>
+                                }
+                            }
+                        </p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Ngày đánh giá:</label>
+                        <p>@(Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Thông tin đặt bàn:</label>
+                        <p>Bàn: @(Model.Reservation?.Table?.TableName ?? "N/A")</p>
+                        <p>Thời gian: @(Model.Reservation?.StartTime.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="fw-bold">Nội dung đánh giá:</label>
+                        <div class="content-box">
+                            @(string.IsNullOrEmpty(Model.Content) ? "Không có nội dung" : Model.Content)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a asp-action="Index" class="btn btn-primary me-2">
+                    <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.FeedbackId" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa đánh giá này?');">
+                    <i class="fas fa-trash me-1"></i> Xóa
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

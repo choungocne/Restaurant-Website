@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Thêm nhân viên mới";
+    Layout = "_AdminLayout";
+}
+@model Employee
+<p>Are you sure you want to delete this employee?</p>
+<dl>
+    <dt>Full Name:</dt>
+    <dd>@Model.FullName</dd>
+</dl>
+<form asp-action="DeleteEmployee" method="post">
+    <input type="hidden" asp-for="EmployeeId" />
+    <button type="submit">Yes, Delete</button>
+    <a asp-action="Employees">Cancel</a>
+</form>

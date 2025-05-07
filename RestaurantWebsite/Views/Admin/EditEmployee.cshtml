@@ -1,0 +1,37 @@
+﻿@model RestaurantWebsite.ViewModels.EditEmployeeViewModel
+@{
+    ViewData["Title"] = " nhân viên";
+    Layout = "_AdminLayout";
+}
+
+<form asp-action="EditEmployee" method="post">
+    <input type="hidden" asp-for="EmployeeId" />
+    <div>
+        <label>Họ và tên:</label>
+        <input asp-for="FullName" />
+    </div>
+    <div>
+        <label>Email:</label>
+        <input asp-for="Email" />
+    </div>
+    <div>
+        <label>Số điện thoại </label>
+        <input asp-for="PhoneNumber" />
+    </div>
+    <div>
+        <label>Role:</label>
+        <select asp-for="Role">
+            <option value="Admin">Admin</option>
+            <option value="Employee">Employee</option>
+        </select>
+    </div>
+    <div>
+        <label>Ngày sinh</label>
+        <input asp-for="BirthDate" />
+    </div>
+    <div>
+        <label>New Password:</label>
+        <input asp-for="Password" type="password" />
+    </div>
+    <button type="submit">Save</button>
+</form>

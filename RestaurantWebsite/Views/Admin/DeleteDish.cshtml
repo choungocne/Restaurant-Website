@@ -1,0 +1,114 @@
+﻿@model RestaurantWebsite.Models.Dish
+@{
+    Layout = "_AdminLayout";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width _
+
+System: device-width, initial-scale=1.0">
+    <title>Xóa món ăn</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .confirmation-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        strong {
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            button[type="submit"]:hover {
+                background-color: #c82333;
+            }
+
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+            a:hover {
+                background-color: #5a6268;
+            }
+        @@media (max-width: 768px) {
+            .confirmation-container
+
+        {
+            padding: 15px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+
+        button[type="submit"], a {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <h2>Xóa món ăn</h2>
+    <div class="confirmation-container">
+        <p>Bạn có chắc chắn muốn xóa món <strong>@Model.DishName</strong>?</p>
+        <form asp-action="DeleteDish" method="post">
+            <input type="hidden" asp-for="DishId" />
+            <button type="submit">Có, xóa</button>
+            <a asp-action="Dishes">Hủy</a>
+        </form>
+    </div>
+</body>
+</html>

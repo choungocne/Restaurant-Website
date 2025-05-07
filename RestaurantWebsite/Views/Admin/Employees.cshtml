@@ -1,0 +1,75 @@
+﻿@model IEnumerable<RestaurantWebsite.Models.Employee>
+@{
+    ViewData["Title"] = "Quản lý nhân viên";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Quản lý nhân viên</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index">Trang quản trị</a></li>
+        <li class="breadcrumb-item active">Quản lý nhân viên</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-users me-1"></i>
+                    Danh sách nhân viên
+                </div>
+                <div>
+                    <a asp-action="CreateEmployee" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Thêm mới
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table id="employees-table" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ tên</th>
+                        <th>Ngày sinh</th>
+                        <th>Số điện thoại</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var employee in Model)
+                    {
+                        <tr>
+                            <td>@employee.EmployeeId</td>
+                            <td>@employee.FullName</td>
+                            <td>@employee.BirthDate.ToString("dd/MM/yyyy")</td>
+                            <td>@employee.PhoneNumber</td>
+                            <td>
+                                @if (employee.UserAccounts.Any())
+                                {
+                                    @employee.UserAccounts.First().Email
+                                }
+                            </td>
+                            <td>
+                                @if (employee.UserAccounts.Any())
+                                {
+                                    @employee.UserAccounts.First().Role
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa có tài khoản</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="EditEmployee" asp-route-id="@employee.EmployeeId" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,176 @@
+﻿@model IEnumerable<RestaurantWebsite.Models.Feedback>
+
+@{
+    ViewData["Title"] = "Danh sách đánh giá";
+    Layout = "_AdminLayout";
+}
+
+<!-- Include Bootstrap 5, Font Awesome, and DataTables CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+        background: linear-gradient(90deg, #007bff, #00d4ff);
+        color: white;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .star-rating .fas.fa-star {
+        color: #ffd700; /* Gold for filled stars */
+    }
+
+    .star-rating .far.fa-star {
+        color: #e4e5e9; /* Gray for empty stars */
+    }
+
+    .content-tooltip {
+        cursor: pointer;
+        position: relative;
+    }
+
+        .content-tooltip:hover::after {
+            content: attr(data-fulltext);
+            position: absolute;
+            background: #333;
+            color: #fff;
+            padding: 8px;
+            border-radius: 5px;
+            z-index: 1000;
+            width: 200px;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+    .btn-sm {
+        border-radius: 8px;
+        padding: 5px 15px;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+    }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+    @@media (max-width: 576px) {
+        .table th, .table td
+
+    {
+        font-size: 0.9rem;
+    }
+
+    .btn-sm {
+        padding: 3px 10px;
+        font-size: 0.8rem;
+    }
+
+    }
+</style>
+
+<div class="container-fluid mt-4">
+    <h1 class="mb-4">Danh sách đánh giá</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-comments me-2"></i>
+            Tất cả đánh giá từ khách hàng
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Khách hàng</th>
+                            <th>Đánh giá</th>
+                            <th>Nội dung</th>
+                            <th>Ngày đặt bàn</th>
+                            <th>Bàn</th>
+                            <th>Ngày đánh giá</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.FeedbackId</td>
+                                <td>@(item.Customer?.CustomerName ?? "N/A")</td>
+                                <td class="star-rating">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= item.Rating)
+                                        {
+                                            <i class="fas fa-star"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="far fa-star"></i>
+                                        }
+                                    }
+                                </td>
+                                <td class="content-tooltip" data-fulltext="@item.Content">
+                                    @(item.Content.Length > 50 ? item.Content.Substring(0, 50) + "..." : item.Content)
+                                </td>
+                                <td>@(item.Reservation?.StartTime.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</td>
+                                <td>@(item.Reservation?.Table?.TableName ?? "N/A")</td>
+                                <td>@(item.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.FeedbackId" class="btn btn-info btn-sm me-1">
+                                        <i class="fas fa-eye"></i> Chi tiết
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.FeedbackId" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa đánh giá này?');">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include JS for Bootstrap, jQuery, and DataTables -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#dataTable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json' // Vietnamese localization
+            },
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50],
+            order: [[6, 'desc']], // Sort by CreatedAt (Ngày đánh giá) descending
+            columnDefs: [
+                { orderable: false, targets: 7 } // Disable sorting on Thao tác column
+            ]
+        });
+    });
+</script>
